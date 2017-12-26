@@ -8,6 +8,7 @@
 #include "ECS_Manager.h"
 #include "PathManager.h"
 #include "Unit.h"
+#include "GroupSelector.h"
 enum  VIEWPORTS : int
 {
 	vp_MAIN,
@@ -31,6 +32,7 @@ class Game
 	D2D1Texture * backGround;
 	D2D1Texture * sidePanel;
 	D2D1Texture * bases;
+	GroupSelector* groupSelector;
 	std::vector<Unit*> testUnits;
 	Unit* currentUnit = nullptr;
 public:
@@ -51,5 +53,6 @@ private:
 	void HandleMap();
 	void HandleInput();
 	void HandleUnits();
-	void GetSelectedUinit(const Vec2f& pos);
+	void GetSelectedUnit(const Vec2f& pos);
+	void HandleMultiSelectedUnits();
 };

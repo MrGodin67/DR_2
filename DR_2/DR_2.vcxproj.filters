@@ -40,6 +40,9 @@
     <Filter Include="Objects\Path">
       <UniqueIdentifier>{5163b505-04cd-42c7-a07c-e9ac54d2c462}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Objects\Group Selection">
+      <UniqueIdentifier>{c979e7ef-990a-4938-be3a-515f71437d40}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -165,6 +168,9 @@
     <ClInclude Include="ECS_Manager.h">
       <Filter>ICS</Filter>
     </ClInclude>
+    <ClInclude Include="GroupSelector.h">
+      <Filter>Objects\Group Selection</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -247,6 +253,9 @@
     </ClCompile>
     <ClCompile Include="SelectedComponent.cpp">
       <Filter>ICS\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="GroupSelector.cpp">
+      <Filter>Objects\Group Selection</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

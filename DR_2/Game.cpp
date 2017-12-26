@@ -40,22 +40,10 @@ Game::Game(Direct3DWindow & wnd)
 		testUnits.back()->Get<Transform>().acceleration = 100.0f;
 		 x += 2.5f;
 	}
-	/*testUnits.push_back( &m_EntityMgr->AddObject<Unit>(Vec2f(100.0f, 100.0f), Vec2f(24.0f, 24.0f),
-		RectF(64.0f, 0.0f, 128.0f, 64.0f), m_entityTileSet->GetBitmap()));
-	testUnits.push_back(&m_EntityMgr->AddObject<Unit>(Vec2f(150.0f, 100.0f), Vec2f(24.0f, 24.0f),
-		RectF(64.0f, 0.0f, 128.0f, 64.0f), m_entityTileSet->GetBitmap()));
-	testUnits.push_back(&m_EntityMgr->AddObject<Unit>(Vec2f(100.0f, 164.0f), Vec2f(24.0f, 24.0f),
-		RectF(64.0f, 0.0f, 128.0f, 64.0f), m_entityTileSet->GetBitmap()));
-	testUnits.push_back(&m_EntityMgr->AddObject<Unit>(Vec2f(28.0f, 100.0f), Vec2f(24.0f, 24.0f),
-		RectF(128.0f,0.0f, 192.0f, 64.0f), m_entityTileSet->GetBitmap()));
-	
-	testUnits[0]->Get<Transform>().acceleration = 100.0f;
-	testUnits[1]->Get<Transform>().acceleration = 100.0f;
-	testUnits[2]->Get<Transform>().acceleration = 100.0f;
-	testUnits[3]->Get<Transform>().acceleration = 100.0f;*/
-
 	currentUnit = testUnits[0];
 	currentUnit->Get<SelectedRect>().selected = true;
+
+	groupSelector = &m_EntityMgr->AddObject<GroupSelector>();
 }
 
 Game::~Game()
@@ -176,7 +164,7 @@ void Game::HandleMap()
 
 void Game::HandleInput()
 {
-	std::vector<MapTile*> list = m_EntityMgr->GetMapPartition(Vec2i(10, 10), 20);
+
 	Vec2f vel = { 0.0f,0.0f };
 	if (window.kbd.KeyIsPressed('W'))
 		vel.y = -10.0f;
@@ -188,6 +176,9 @@ void Game::HandleInput()
 		vel.x = 10.0f;
 	m_cam.Scroll(vel);
 
+
+
+
 	Mouse::Event mouseEvent = window.mouse.Read();
 	if (mouseEvent.GetType() == Mouse::Event::RRelease)
 	{
@@ -197,12 +188,53 @@ void Game::HandleInput()
 			m_pathMgr->requestPath(currentUnit->Get<Transform>().position, pos, currentUnit);
 			m_pathMgr->GetPathNode(currentUnit->currentTile->MapLocation())->passable = true;
 		}
+		else if(groupSelector->HasSelectedUnits())
+		{
+			Vec2f pos = m_cam.ConvertToWorldSpace(Vec2f((float)mouseEvent.GetPosX(), (float)mouseEvent.GetPosY()));
+			pos.x = (pos.x / m_currentArena->GetData().cellWidth);
+			pos.y = (pos.y / m_currentArena->GetData().cellHeight);
+			MapTile* tile = m_EntityMgr->GetTile(pos);
+			
+			if (tile)
+			{
+				auto& vec = groupSelector->SelectedUnits();
+				auto& list = m_EntityMgr->GetMapPartition(tile->MapLocation(), (int)vec.size());
+				for (int i : Iterate(0, (int)vec.size()))
+				{
+					Unit* unit = vec[i];
+					Vec2f tempPos = list[i]->Get<Transform>().Center();
+				
+					Vec2f tp = unit->Get<Transform>().position;
+					tp.x = (tp.x / m_currentArena->GetData().cellWidth);
+					tp.y = (tp.y / m_currentArena->GetData().cellHeight);
+					m_pathMgr->GetPathNode(m_EntityMgr->GetTile(Vec2i(tp))->MapLocation())->passable = true;
+					m_pathMgr->requestPath(unit->Get<Transform>().position, tempPos, unit);
+				}
+			}
+		}
 	}
 	if (mouseEvent.GetType() == Mouse::Event::LRelease)
 	{
-		Vec2f pos = m_cam.ConvertToWorldSpace(Vec2f((float)mouseEvent.GetPosX(), (float)mouseEvent.GetPosY()));
-		GetSelectedUinit(pos);
+		if (groupSelector->Active())
+		{
+			groupSelector->End();
+		}
+		else
+		{
+
+			Vec2f pos = m_cam.ConvertToWorldSpace(Vec2f((float)mouseEvent.GetPosX(), (float)mouseEvent.GetPosY()));
+			GetSelectedUnit(pos);
+		}
 	}
+	if (mouseEvent.GetType() == Mouse::Event::LPress && window.kbd.KeyIsPressed(VK_CONTROL))
+	{
+		groupSelector->Start(m_cam.ConvertToWorldSpace(Vec2f((float)mouseEvent.GetPosX(), (float)mouseEvent.GetPosY())));
+		
+	}
+	
+	HandleMultiSelectedUnits();
+		
+	
 }
 
 void Game::HandleUnits()
@@ -244,9 +276,40 @@ void Game::HandleUnits()
 		}
 
 	});
+	m_EntityMgr->ForAllOfType<GroupSelector>([this](auto& obj)
+	{
+		obj.Get<Transform>().Translate(-m_cam.GetPos());
+		obj.AddGroup(groupRender);
+	});
 }
 
-void Game::GetSelectedUinit(const Vec2f & pos)
+void Game::HandleMultiSelectedUnits()
+{
+	if (groupSelector->Active())
+	{
+		groupSelector->Drag(m_cam.ConvertToWorldSpace(Vec2f((float)window.mouse.GetPosX(), (float)window.mouse.GetPosY())));
+	}
+	else
+	{
+		if (groupSelector->SelectedUnits().size() > 0)
+		{
+			//currentUnit->Get<SelectedRect>().selected = false;
+			currentUnit = 0;
+			if (groupSelector->SelectedUnits().size() == 1)
+			{
+				currentUnit = groupSelector->SelectedUnits()[0];
+				groupSelector->FlushSelected();
+				currentUnit->Get<SelectedRect>().selected = true;
+			
+				return;
+			}
+			
+		}
+	}
+
+}
+
+void Game::GetSelectedUnit(const Vec2f & pos)
 {
 	
 	m_EntityMgr->ForAllOfType<Unit>([this,pos](auto& obj)
@@ -256,16 +319,19 @@ void Game::GetSelectedUinit(const Vec2f & pos)
 		{
 			if (!obj.Get<SelectedRect>().selected)
 			{
-				currentUnit->Get<SelectedRect>().selected = false;
+				if(currentUnit)
+				   currentUnit->Get<SelectedRect>().selected = false;
 				obj.Get<SelectedRect>().selected = true;
 				currentUnit = &obj;
 				m_pathMgr->GetPathNode(obj.currentTile->MapLocation())->passable = true;
+				groupSelector->FlushSelected();
 				return;
 			}
 		}
 		
 
 	});
+	
 
 }
 

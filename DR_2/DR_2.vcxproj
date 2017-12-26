@@ -161,6 +161,7 @@
     <ClInclude Include="Game.h" />
     <ClInclude Include="Graphics.h" />
     <ClInclude Include="Array.h" />
+    <ClInclude Include="GroupSelector.h" />
     <ClInclude Include="InputManager.h" />
     <ClInclude Include="Iter.h" />
     <ClInclude Include="keyboard.h" />
@@ -199,6 +200,7 @@
     <ClCompile Include="ECS_Manager.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Graphics.cpp" />
+    <ClCompile Include="GroupSelector.cpp" />
     <ClCompile Include="Keyboard.cpp" />
     <ClCompile Include="Locator.cpp" />
     <ClCompile Include="MapFileParser.cpp" />
