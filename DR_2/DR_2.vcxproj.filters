@@ -13,6 +13,33 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Engine">
+      <UniqueIdentifier>{369d85af-08d0-4319-bf25-1a9b2fa48e81}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Audio">
+      <UniqueIdentifier>{c00a3f0d-82bc-4a16-afbd-dc5cbd0ca539}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ICS">
+      <UniqueIdentifier>{99d9a249-76e9-4ff5-aa05-4a3147839251}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ICS\Components">
+      <UniqueIdentifier>{14745e53-92d9-4584-97d2-8daf13f349e3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Loaders">
+      <UniqueIdentifier>{dc32fa0c-522d-4b61-a94b-c6a832931ea6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SidePanel">
+      <UniqueIdentifier>{9ea37047-d155-4a5e-ba19-2282c0f8a472}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Objects">
+      <UniqueIdentifier>{d180cf65-7dc6-4d8f-b349-1c32e5000497}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Objects\Tile">
+      <UniqueIdentifier>{58b7f6a6-e7d7-40cd-9abc-266a482dce6e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Objects\Path">
+      <UniqueIdentifier>{5163b505-04cd-42c7-a07c-e9ac54d2c462}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -30,13 +57,196 @@
     <ClInclude Include="DR_2.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ChiliException.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ChiliWin.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="InputManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Locator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Rect.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SimpleTimer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Vec2.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ViewPortMain.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectWrite.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Direct3DWindow.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Direct3D_2D.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="D2D1Texture.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Game.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="SoundManager.h">
+      <Filter>Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="SoundEffect.h">
+      <Filter>Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="Sound.h">
+      <Filter>Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="mouse.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="keyboard.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="DXErr.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="TransformComponent.h">
+      <Filter>ICS\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Components.h">
+      <Filter>ICS\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Arena.h">
+      <Filter>Loaders</Filter>
+    </ClInclude>
+    <ClInclude Include="MapFileParser.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Array.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Unit.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Collider.h">
+      <Filter>ICS\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="MapTile.h">
+      <Filter>Objects\Tile</Filter>
+    </ClInclude>
+    <ClInclude Include="newAStar.h">
+      <Filter>Objects\Path</Filter>
+    </ClInclude>
+    <ClInclude Include="PathManager.h">
+      <Filter>Objects\Path</Filter>
+    </ClInclude>
+    <ClInclude Include="Iter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PathComponent.h">
+      <Filter>ICS\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="SelectedComponent.h">
+      <Filter>ICS\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="ECS_Manager.h">
+      <Filter>ICS</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="DR_2.cpp">
+    <ClCompile Include="Camera.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D2D1Texture.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DrrectWrite.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Locator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SimpleTimer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Direct3D_2D.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Direct3DWindow.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="DR_2.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="DXErr.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Game.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Keyboard.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="ViewPortMain.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Mouse.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Sound.cpp">
+      <Filter>Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="TransformComponent.cpp">
+      <Filter>ICS\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Arena.cpp">
+      <Filter>Loaders</Filter>
+    </ClCompile>
+    <ClCompile Include="MapFileParser.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ECS_Manager.cpp">
+      <Filter>ICS</Filter>
+    </ClCompile>
+    <ClCompile Include="Unit.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Collider.cpp">
+      <Filter>ICS\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="MapTile.cpp">
+      <Filter>Objects\Tile</Filter>
+    </ClCompile>
+    <ClCompile Include="newAStar.cpp">
+      <Filter>Objects\Path</Filter>
+    </ClCompile>
+    <ClCompile Include="PathManager.cpp">
+      <Filter>Objects\Path</Filter>
+    </ClCompile>
+    <ClCompile Include="PathComponent.cpp">
+      <Filter>ICS\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="SelectedComponent.cpp">
+      <Filter>ICS\Components</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
