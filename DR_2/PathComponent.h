@@ -10,7 +10,7 @@ class Path :
 	bool done = false;
 	std::size_t currentIndex = 0llu;
 
-
+	Vec2f GetSplinePoint(float t);
 public:
 	Path();
 	Path(const std::vector<Vec2f>& data);
@@ -20,6 +20,6 @@ public:
 	bool Completed()const;
 	bool Moving()const;
 	void Moving(const bool& value);
-	Vec2f GetSplinePoint(float t);
+	
 };
 

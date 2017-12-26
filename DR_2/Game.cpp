@@ -191,9 +191,7 @@ void Game::HandleInput()
 		else if(groupSelector->HasSelectedUnits())
 		{
 			Vec2f pos = m_cam.ConvertToWorldSpace(Vec2f((float)mouseEvent.GetPosX(), (float)mouseEvent.GetPosY()));
-			pos.x = (pos.x / m_currentArena->GetData().cellWidth);
-			pos.y = (pos.y / m_currentArena->GetData().cellHeight);
-			MapTile* tile = m_EntityMgr->GetTile(pos);
+			MapTile* tile = m_EntityMgr->GetTile(ConvertToTileLocation(pos));
 			
 			if (tile)
 			{
@@ -203,11 +201,8 @@ void Game::HandleInput()
 				{
 					Unit* unit = vec[i];
 					Vec2f tempPos = list[i]->Get<Transform>().Center();
-				
-					Vec2f tp = unit->Get<Transform>().position;
-					tp.x = (tp.x / m_currentArena->GetData().cellWidth);
-					tp.y = (tp.y / m_currentArena->GetData().cellHeight);
-					m_pathMgr->GetPathNode(m_EntityMgr->GetTile(Vec2i(tp))->MapLocation())->passable = true;
+									
+					m_pathMgr->GetPathNode(m_EntityMgr->GetTile(Vec2i(ConvertToTileLocation(unit->Get<Transform>().position)))->MapLocation())->passable = true;
 					m_pathMgr->requestPath(unit->Get<Transform>().position, tempPos, unit);
 				}
 			}
@@ -242,11 +237,8 @@ void Game::HandleUnits()
 	m_EntityMgr->ForAllOfType<Unit>([this](auto& obj)
 	{
 
-		    Vec2i pos;
-		    pos.x = (obj.Get<Transform>().position.x / m_currentArena->GetData().cellWidth);
-		    pos.y = (obj.Get<Transform>().position.y / m_currentArena->GetData().cellHeight);
-
-		    MapTile* tile = m_EntityMgr->GetTile(pos);
+		    
+		    MapTile* tile = m_EntityMgr->GetTile(ConvertToTileLocation(obj.Get<Transform>().position));
 			if (tile->Get<Transform>().Boundary().Contains(obj.Get<Transform>().position))
 			{
 				if (obj.currentTile != tile)
@@ -307,6 +299,14 @@ void Game::HandleMultiSelectedUnits()
 		}
 	}
 
+}
+
+Vec2i Game::ConvertToTileLocation(const Vec2f & worldPos)
+{
+	Vec2f pos = worldPos;
+	pos.x = (pos.x / m_currentArena->GetData().cellWidth);
+	pos.y = (pos.y / m_currentArena->GetData().cellHeight);
+	return Vec2i(pos);
 }
 
 void Game::GetSelectedUnit(const Vec2f & pos)
