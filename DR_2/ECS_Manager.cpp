@@ -106,11 +106,16 @@ std::vector<MapTile*> ECS_Manager::GetMapPartition(const Vec2i & location, const
 		
 	
 		
-		std::sort(list.begin(), list.end(), [location](MapTile* a, MapTile* b)
-		{
-			return (location - Vec2i(a->Get<Transform>().position)).LenSq() < (location - Vec2i(b->Get<Transform>().position)).LenSq();
-		});
+		
 		step++;
+		if (step > objectCount)
+		{
+			return std::vector<MapTile*>();
+		}
 	}
+	/*std::sort(list.begin(), list.end(), [location](MapTile* a, MapTile* b)
+	{
+		return (location - a->MapLocation()).LenSq() < (location - b->MapLocation()).LenSq();
+	});*/
 	return list;
 }

@@ -24,8 +24,10 @@ public:
 	void Selected(const bool& val);
 	void Update(const float& dt)override;
 	void UpdateTile();
-	Vec2i MapLocation();
-	bool Moving();
+	Vec2i MapLocation()const;
+	bool Moving()const;
+	Vec2f Position()const;
+	Vec2f Center()const;
 	
 };
 

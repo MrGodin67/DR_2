@@ -80,14 +80,24 @@ void Unit::UpdateTile()
 	}
 }
 
-Vec2i Unit::MapLocation()
+Vec2i Unit::MapLocation()const
 {
 	  return currentTile->MapLocation() ;
 }
 
-bool Unit::Moving()
+bool Unit::Moving()const
 {
 	return Has<Path>();
+}
+
+Vec2f Unit::Position()const
+{
+	return Get<Transform>().position;
+}
+
+Vec2f Unit::Center()const
+{
+	return  Get<Transform>().Center();
 }
 
 

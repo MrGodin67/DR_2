@@ -203,8 +203,8 @@ void Game::HandleInput()
 				std::sort(vec.begin(),vec.end(),
 					[mousePosInWorld](auto& a, auto& b)
 				{
-					return (mousePosInWorld - a->Get<Transform>().Center()).LenSq() <
-						(mousePosInWorld - b->Get<Transform>().Center()).LenSq();
+					return (mousePosInWorld - a->Center()).LenSq() <
+						(mousePosInWorld - b->Center()).LenSq();
 				});
 				auto& list = m_EntityMgr->GetMapPartition(tile->MapLocation(), (int)vec.size());
 				for (int i : Iterate(0, (int)vec.size()))
@@ -212,7 +212,7 @@ void Game::HandleInput()
 					
 					Unit* unit = vec[i];
 					unit->currentTile->Passable(true);
-				    m_pathMgr->requestPath(unit->Get<Transform>().Center(), 
+				    m_pathMgr->requestPath(unit->Center(), 
 						list[i]->Get<Transform>().Center(), unit);
 				}
 			}
