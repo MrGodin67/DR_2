@@ -3,29 +3,6 @@
 #include "Vec2.h"
 
 class ECS_Manager;
-/*class GameObject
-{
-	bool alive = true;
-public:
-	GameObject() = default;
-	virtual ~GameObject() {}
-	ECS_Manager* manager = nullptr;
-	bool Alive()const 
-	{
-		return alive;
-	}
-	void Destroy()
-	{
-		alive = false;
-	}
-	virtual void Update(const float& dt) {};
-	virtual void Draw() {};
-
-};*/
-
-
-
-
 
 class Transform;
 class Component;
@@ -207,8 +184,6 @@ public:
 		T* ent(new T(std::forward<TArgs>(mArgs)...));
 		std::unique_ptr<T> uPtr{ ent };
 		objects.emplace_back(std::move(uPtr));
-		
-		
 	    ent->manager = this;
 		ent->Init();
 		groupedByType[GetID<T>()].emplace_back(ent);
@@ -256,43 +231,4 @@ public:
 		}
 	}
 };
-/*mgr.forAll<Player>([this](auto& player)
-                {
-                    // Player-bullet interaction.
-                    mgr.forAll<Bullet>([this, &player](auto& bullet)
-                        {
-                            if(bullet.collidesWith(player))
-                            {
-                                bullet.kill();
-                                player.kill();
-                            }
-                        });
 
-                    // Player-boss interaction.
-                    mgr.forAll<Boss>([this, &player](auto& boss)
-                        {
-                            const auto& px(player.getPos().x);
-                            const auto& bx(boss.getPos().x);
-
-                            boss.setDir(px > bx ? 0.f : ssvu::pi);
-                        });
-
-                    // Player firing.
-                    if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Z))
-                        mgr.emplace<PlayerBullet>(player.getPos());
-                });
-
-            mgr.forAll<PlayerBullet>([this](auto& pb)
-                {
-                    // Player bullet-boss interaction.
-                    mgr.forAll<Boss>([this, &pb](auto& boss)
-                        {
-                            if(pb.collidesWith(boss))
-                            {
-                                boss.damage(1);
-                                pb.kill();
-                            }
-                        });
-                });
-
-mgr.refresh();*/
