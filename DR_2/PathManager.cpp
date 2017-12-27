@@ -93,7 +93,10 @@ void PathfindingManager::requestPath(const Vec2f& start, const Vec2f& end,GameOb
 	
 
 }
-
+bool PathfindingManager::PendingPaths()
+{
+	return m_queue.size() > 0;
+}
 void PathfindingManager::checkForDone()
 {
 	if (m_queue.size() == 0)return;
@@ -108,10 +111,11 @@ void PathfindingManager::checkForDone()
 				if (unit = dynamic_cast<Unit*>(m_queue[i]->owner))
 				{
 					unit->SetPath(path);
-					m_queue[i]->done = true;
+					
 				}
 				
 			}
+			m_queue[i]->done = true;
 		}
 	}
 	refreshQueue();

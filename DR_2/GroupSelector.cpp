@@ -3,6 +3,7 @@
 #include "SelectedComponent.h"
 #include "Locator.h"
 #include "Unit.h"
+#include "newAStar.h"
 GroupSelector::GroupSelector()
 {
 }
@@ -23,7 +24,7 @@ void GroupSelector::Draw()
 	if (dragging)
 	{
 		Locator::Gfx()->DrawRectangle(Get<Transform>().Matrix(), frame.ToD2D(),
-			D2D1::ColorF(0.0f, 0.0f, 1.0f, 1.0f));
+			D2D1::ColorF(0.0f, 1.0f, 0.0f, 1.0f));
 	}
 }
 
@@ -51,7 +52,7 @@ void GroupSelector::End()
 	{
 		if (obj.Get<Transform>().Boundary().Overlaps(frame))
 		{
-
+			//obj.currentTile->Passable(true);
 			obj.Get<SelectedRect>().selected = true;
 			selectedUnits.push_back(&obj);
 		}

@@ -38,5 +38,6 @@ public:
 	newNode* GetPathNode(const Vec2i& location)noexcept;
 	void requestPath(const Vec2f& start, const Vec2f& end, GameObject* owner);
 	void checkForDone();
+	bool PendingPaths();
 	
 };

@@ -6,6 +6,7 @@ SoundManager* Locator::soundEngine = nullptr;
 TextHandler* Locator::textManager = nullptr;
 ID2D1SolidColorBrush* Locator::solidBrush = nullptr;
 Graphics* Locator::gfx = nullptr;
+PathfindingManager* Locator::path = nullptr;
 void Locator::SetGraphics(Graphics * g)
 {
 	gfx = g;
@@ -30,6 +31,11 @@ void Locator::SetTextManager(TextHandler * tx)
 	textManager = tx;
 }
 
+void Locator::SetPathFinding(PathfindingManager * p)
+{
+	path = p;
+}
+
 ID2D1RenderTarget * Locator::D2DRenderTarget()
 {
 	return renderTarget;
@@ -48,6 +54,11 @@ SoundManager * Locator::Audio()
 Graphics * Locator::Gfx()
 {
 	return gfx;
+}
+
+PathfindingManager * Locator::PathFinder()
+{
+	return path;
 }
 
 

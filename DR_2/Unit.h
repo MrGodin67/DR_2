@@ -22,6 +22,10 @@ public:
 	void Draw()override;
 	bool Selected()const;
 	void Selected(const bool& val);
+	void Update(const float& dt)override;
+	void UpdateTile();
+	Vec2i MapLocation();
+	bool Moving();
 	
 };
 

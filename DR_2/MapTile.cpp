@@ -2,6 +2,8 @@
 #include "MapTile.h"
 #include "Locator.h"
 #include "Collider.h"
+#include "Unit.h"
+#include "newAStar.h"
 Vec2f MapTile::dimensions = { 8.0f,8.0f };
 ID2D1Bitmap* MapTile::tileSet = nullptr;
 void MapTile::Init()
@@ -15,6 +17,11 @@ void MapTile::Init()
 bool MapTile::Passable() const
 {
 	return passable;
+}
+void MapTile::Passable(const bool & val)
+{
+	passable = val;
+	Locator::PathFinder()->GetPathNode(mapLocation)->passable = val;
 }
 MapTile::MapTile(const Vec2f& position,
 	const RectF& srcRect, const bool& passable)
@@ -54,4 +61,21 @@ Vec2f MapTile::GetDimensions()
 Vec2i MapTile::MapLocation() const
 {
 	return mapLocation;
+}
+
+void MapTile::AddUnit(Unit * unit)
+{
+	auto& it = std::find(m_occupants.begin(), m_occupants.end(), unit);
+	if (it != m_occupants.end())
+		m_occupants.push_back(unit);
+}
+
+void MapTile::RemoveUnit(Unit * unit)
+{
+	m_occupants.erase(std::remove_if(m_occupants.begin(),m_occupants.end(),
+		[unit](Unit* out_unit) 
+	{
+		return unit == out_unit;
+	}), m_occupants.end());
+
 }
