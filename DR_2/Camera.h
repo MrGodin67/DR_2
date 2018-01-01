@@ -26,7 +26,7 @@ private:
 	Vec2f center;
 	Vec2f focalPoint; 
 	Vec2f ScrollDiff;
-	float scrollSpeed = 4.0f;
+	float scrollSpeed = 2.0f;
 	RectF mapFrame;
 	RectF viewFrame;
 	float view_width, view_height;

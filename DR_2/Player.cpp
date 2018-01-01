@@ -13,7 +13,7 @@ void Player::DoIdle()
 	else
 		Get<Animation>().StartSequenceByName("right_idle");
 	pCurrentState = states[psIdle];
-
+	Get<Transform>().horizontalDirection = 0.0f;
 }
 void Player::DoJump()
 {
@@ -44,7 +44,7 @@ void Player::DoWalk()
 		Get<Animation>().StartSequenceByName("right_walk");
 
 	pCurrentState = states[psWalking];
-	Walking* walk = dynamic_cast<Walking*>(states[psWalking]);
+	
 	
 	
 }
@@ -60,7 +60,7 @@ Player::Player(const Vec2f& pos,  const Vec2f& size)
 	Animation * an = &Add<Animation>();
 	Animation::Sequence seq;
 	seq.current_index = 0;
-	seq.frameDelay = 0.20f;
+	seq.frameDelay = 0.080f;
 	seq.image = m_moveImage->GetBitmap();
 	seq.srcRects.push_back(RectF(0.0f, 0.0f, 64.0f, 64.0f));
 	an->AddSequence("right_idle", seq);
@@ -87,7 +87,7 @@ Player::Player(const Vec2f& pos,  const Vec2f& size)
 	states[psIdle] = &Add<Idle>();
 	states[psWalking] = &Add<Walking>(1.0f);
 	states[psJumping] = &Add<Jump>();
-	pCurrentState = states[psJumping];
+	pCurrentState = states[psIdle];
 }
 
 

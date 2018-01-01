@@ -62,7 +62,7 @@ HRESULT Game::ConstructScene(const float& deltaTime)
 	m_cam.SetFocusPoint(m_pPlayer->Get<Transform>().Center());
 	m_pPlayer->Get<Transform>().Translate(-m_cam.GetPosition());
 	background2->Translate(Vec2f(-m_cam.GetPosition().x*0.15f, 0.0f));
-	
+	background2->SetScroll(m_pPlayer->Get<Transform>().horizontalDirection*deltaTime);
 	
 	// update physics
 	
