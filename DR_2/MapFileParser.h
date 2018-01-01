@@ -10,6 +10,8 @@ struct LayerData
 	int height;
 	int cellWidth;
 	int cellHeight;
+	int drawWidth;
+	int drawHeight;
 	std::vector<vint> layers;
 };
 class MapFileParser

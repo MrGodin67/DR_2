@@ -37,11 +37,8 @@
     <Filter Include="Objects\Tile">
       <UniqueIdentifier>{58b7f6a6-e7d7-40cd-9abc-266a482dce6e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Objects\Path">
-      <UniqueIdentifier>{5163b505-04cd-42c7-a07c-e9ac54d2c462}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Objects\Group Selection">
-      <UniqueIdentifier>{c979e7ef-990a-4938-be3a-515f71437d40}</UniqueIdentifier>
+    <Filter Include="Objects\Player">
+      <UniqueIdentifier>{4b755e81-ba42-4d6d-bf8e-2e56e627fd37}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -135,13 +132,7 @@
     <ClInclude Include="Arena.h">
       <Filter>Loaders</Filter>
     </ClInclude>
-    <ClInclude Include="MapFileParser.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Array.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Unit.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Collider.h">
@@ -150,26 +141,38 @@
     <ClInclude Include="MapTile.h">
       <Filter>Objects\Tile</Filter>
     </ClInclude>
-    <ClInclude Include="newAStar.h">
-      <Filter>Objects\Path</Filter>
-    </ClInclude>
-    <ClInclude Include="PathManager.h">
-      <Filter>Objects\Path</Filter>
-    </ClInclude>
     <ClInclude Include="Iter.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="PathComponent.h">
-      <Filter>ICS\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="SelectedComponent.h">
-      <Filter>ICS\Components</Filter>
     </ClInclude>
     <ClInclude Include="ECS_Manager.h">
       <Filter>ICS</Filter>
     </ClInclude>
-    <ClInclude Include="GroupSelector.h">
-      <Filter>Objects\Group Selection</Filter>
+    <ClInclude Include="RandGen.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MapFileParser.h">
+      <Filter>Loaders</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Animation.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Input.h">
+      <Filter>ICS\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Idle.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Walking.h">
+      <Filter>ICS\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Jump.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BackGroundLayer.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -227,14 +230,8 @@
     <ClCompile Include="Arena.cpp">
       <Filter>Loaders</Filter>
     </ClCompile>
-    <ClCompile Include="MapFileParser.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="ECS_Manager.cpp">
       <Filter>ICS</Filter>
-    </ClCompile>
-    <ClCompile Include="Unit.cpp">
-      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Collider.cpp">
       <Filter>ICS\Components</Filter>
@@ -242,20 +239,29 @@
     <ClCompile Include="MapTile.cpp">
       <Filter>Objects\Tile</Filter>
     </ClCompile>
-    <ClCompile Include="newAStar.cpp">
-      <Filter>Objects\Path</Filter>
+    <ClCompile Include="MapFileParser.cpp">
+      <Filter>Loaders</Filter>
     </ClCompile>
-    <ClCompile Include="PathManager.cpp">
-      <Filter>Objects\Path</Filter>
+    <ClCompile Include="Player.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="PathComponent.cpp">
+    <ClCompile Include="Animation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Input.cpp">
       <Filter>ICS\Components</Filter>
     </ClCompile>
-    <ClCompile Include="SelectedComponent.cpp">
+    <ClCompile Include="Idle.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Walking.cpp">
       <Filter>ICS\Components</Filter>
     </ClCompile>
-    <ClCompile Include="GroupSelector.cpp">
-      <Filter>Objects\Group Selection</Filter>
+    <ClCompile Include="Jump.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="BackGroundLayer.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

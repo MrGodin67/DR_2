@@ -3,13 +3,12 @@
 #include "Direct3DWindow.h"
 #include "Components.h"
 #include "MapTile.h"
-#include "Unit.h"
-#include "SelectedComponent.h"
-#include "newAStar.h"
+#include "Animation.h"
+#include "Collider.h"
 static const vstring mapFilenames = 
 {
 	{"map1.txt"},
-	{"map2.txt"}
+	{"assets\\plat1.txt"}
 };
 
 Game::Game(Direct3DWindow & wnd)
@@ -22,30 +21,19 @@ Game::Game(Direct3DWindow & wnd)
 	m_cam(m_vpMain.Width(), m_vpMain.Height())
 {
 	Locator::SetGraphics(&gfx);
-	m_entityTileSet = MakeUnique<D2D1Texture>(Locator::D2DRenderTarget(),L"assets\\playerunits.png");
+	
 	
 		
 	m_EntityMgr = std::make_unique<ECS_Manager>();
-	m_pathMgr = MakeUnique<PathfindingManager>();
-	Locator::SetPathFinding(m_pathMgr.get());
-	LoadLevel(0);
+	
+	LoadLevel(1);
 	LoadAudio();
-	float x = 37.5f;
-	float y = 37.5f;
-	int inc = 0;
-	for (int c = 0; c < 12; c++)
-	{
-		inc = c % 4;
-		testUnits.push_back(&m_EntityMgr->AddObject<Unit>(Vec2f(x * (2 + inc), y * (2 + inc)), Vec2f(24.0f, 24.0f),
-			RectF(inc * 64.0f, 0.0f, (inc + 1) * 64.0f, 64.0f), m_entityTileSet->GetBitmap()));
-		testUnits.back()->Get<Transform>().acceleration = 100.0f;
-		testUnits.back()->UpdateTile();
-		 x += 2.5f;
-	}
-	currentUnit = testUnits[0];
-	currentUnit->Get<SelectedRect>().selected = true;
+	
 
-	groupSelector = &m_EntityMgr->AddObject<GroupSelector>();
+	InitializePLayer();
+	background1 = &m_EntityMgr->AddObject<BackGroundLayer>(Vec2f(0.0f, 0.0f), 0.0f, L"assets\\back1.png");
+	background2 = &m_EntityMgr->AddObject<BackGroundLayer>(Vec2f(0.0f, 500.0f - 128.0f ), 0.0f, L"assets\\back2.png");
+	
 }
 
 Game::~Game()
@@ -59,7 +47,7 @@ bool Game::Play(const float& deltaTime)
 {
 	HRESULT hr;
 	// check if any queued requests are done
-	m_pathMgr->checkForDone();
+	
 	if (FAILED(hr = ConstructScene(deltaTime))) 
 	{ return false; }
 	if (FAILED(hr = RenderScene())) { return false; }
@@ -69,33 +57,42 @@ bool Game::Play(const float& deltaTime)
 HRESULT Game::ConstructScene(const float& deltaTime)
 {
 	// get user input
-	//if (currentUnit)
-		//m_cam.UpdatePosition(currentUnit->Get<Transform>().Center());
-
-	
 	HandleInput();
+	m_pPlayer->Update(deltaTime);
+	m_cam.SetFocusPoint(m_pPlayer->Get<Transform>().Center());
+	m_pPlayer->Get<Transform>().Translate(-m_cam.GetPosition());
+	background2->Translate(Vec2f(-m_cam.GetPosition().x*0.15f, 0.0f));
+	
+	
 	// update physics
+	
 	m_EntityMgr->Update(deltaTime);
+	
 	// handle physics results
 	HandleMap();
-	HandleUnits();
+	FindCollisions();
+	//HandleUnits();
 	//~
 	// refresh objects and groups, removes dead or inactive ect.. 
 	m_EntityMgr->Refresh();
-	
-	
+	m_cam.Update(deltaTime);
+	//m_cam.UpdatePosition(m_cam)
+	m_soundFX->PlayQueue();
+
 	return S_OK;
 }
 
 HRESULT Game::RenderScene()
 {
 	HRESULT hr;
-	m_soundFX->PlayQueue();
+	
 	hr = gfx.BeginScene(0.0f, 0.0f, 0.0f, 1.0f);
 	if (FAILED(hr)) { return hr; }
 	
 	m_vpMain.BeginScene();
-	 m_EntityMgr->Draw();
+	//DrawBackground();
+	m_EntityMgr->Draw();
+	 m_pPlayer->Draw();
 	m_vpMain.EndScene();
 
 	m_vpUI.BeginScene();
@@ -126,8 +123,7 @@ void Game::LoadLevel(const std::size_t& index)
 {
 	backGround = new D2D1Texture(Locator::D2DRenderTarget(), L"assets\\back1.png");
 	assert(backGround->GetBitmap());
-	sidePanel = new D2D1Texture(Locator::D2DRenderTarget(), L"assets\\side.png");
-	assert(sidePanel->GetBitmap());
+	
 	
 	std::string fileName = mapFilenames[index];
 
@@ -137,16 +133,29 @@ void Game::LoadLevel(const std::size_t& index)
 
 	m_currentArena = &m_EntityMgr->AddObject<Arena>(data);
 	
-	vint mapData = m_currentArena->Create(m_EntityMgr);
-	m_pathMgr->Initialize(mapData, Vec2i(data.width, data.height), Vec2f((float)data.cellWidth,(float)data.cellHeight));
+	 m_currentArena->Create(m_EntityMgr);
 	
-	m_cam.ConfineToMap(RectF(0.0f, 0.0f, data.width * data.cellWidth, data.height * data.cellHeight));
-	m_cam.UpdatePosition(Vec2f(0.0f, 0.0f));
+	m_cam.ConfineToMap(RectF(0.0f, 0.0f, (float)(data.width * data.drawWidth), (float)(data.height * data.drawHeight)));
+	m_cam.SetFocusPoint(Vec2f(600.0f,800.0f));
 	int y = 0;
+}
+
+void Game::InitializePLayer()
+{
+	
+	Vec2f size = { 36.0f,42.0f };
+	Vec2f position = { 100.0f,100.0f };
+	m_pPlayer = (Player*)&m_EntityMgr->AddObject<Player>(position,size);
+	m_pPlayer->Get<Transform>().acceleration = 20.20f;
+	m_pPlayer->Get<Transform>().friction = 0.820f;
+	m_pPlayer->Add<Collider>(position + (size * 0.5f), size * 0.5f);
+	m_pPlayer->Add<Input>(window.kbd, window.mouse);
+	m_pPlayer->AddGroup(groupMap);
 }
 
 void Game::HandleMap()
 {
+	m_colliders.clear();
 	m_EntityMgr->ForAllOfType<MapTile>([this](auto& obj)
 	{
 
@@ -154,7 +163,8 @@ void Game::HandleMap()
 		{
 
 			obj.AddGroup(groupRender);
-			obj.Get<Transform>().Translate(-m_cam.GetPos());
+			obj.Get<Transform>().Translate(-m_cam.GetPosition());
+			m_colliders.push_back(&obj.Get<Collider>());
 		}
 		else
 		{
@@ -167,71 +177,22 @@ void Game::HandleMap()
 void Game::HandleInput()
 {
 
-	Vec2f vel = { 0.0f,0.0f };
-	if (window.kbd.KeyIsPressed('W'))
-		vel.y = -10.0f;
-	if (window.kbd.KeyIsPressed('S'))
-		vel.y = 10.0f;
-	if (window.kbd.KeyIsPressed('A'))
-		vel.x = -10.0f;
-	if (window.kbd.KeyIsPressed('D'))
-		vel.x = 10.0f;
-	m_cam.Scroll(vel);
+	
+	
 
-
-
-
+	
 	Mouse::Event mouseEvent = window.mouse.Read();
 	if (mouseEvent.GetType() == Mouse::Event::RRelease)
 	{
-		if (currentUnit)
-		{
-			currentUnit->currentTile->Passable(true);
-			m_pathMgr->requestPath(currentUnit->Get<Transform>().position, MouseWorldSpace(), currentUnit);
-			
-		}
-		if(groupSelector->HasSelectedUnits())
-		{
-			Vec2f mousePosInWorld = MouseWorldSpace();
-			MapTile* tile = m_EntityMgr->GetTile(ConvertToTileLocation(mousePosInWorld));
-			
-			if (tile)
-			{
-				if (!tile->Passable())
-					return;
-				auto& vec = groupSelector->SelectedUnits();
-				std::sort(vec.begin(),vec.end(),
-					[mousePosInWorld](auto& a, auto& b)
-				{
-					return (mousePosInWorld - a->Center()).LenSq() <
-						(mousePosInWorld - b->Center()).LenSq();
-				});
-				auto& list = m_EntityMgr->GetMapPartition(tile->MapLocation(), (int)vec.size());
-				for (int i : Iterate(0, (int)vec.size()))
-				{
-					
-					Unit* unit = vec[i];
-					unit->currentTile->Passable(true);
-				    m_pathMgr->requestPath(unit->Center(), 
-						list[i]->Get<Transform>().Center(), unit);
-				}
-			}
-		}
+		
 	}
 	if (mouseEvent.GetType() == Mouse::Event::LRelease)
 	{
-		if (groupSelector->Active())
-		{
-			groupSelector->End();
-		}
-		else
-		{
-			GetSelectedUnit(MouseWorldSpace());
-		}
+		
 	}
 	if (mouseEvent.GetType() == Mouse::Event::LPress && window.kbd.KeyIsPressed(VK_CONTROL))
 	{
-		groupSelector->Start(MouseWorldSpace());
+	
 		
 	}
 	
@@ -240,57 +201,31 @@ void Game::HandleInput()
 	
 }
 
-void Game::HandleUnits()
+void Game::FindCollisions()
 {
-	m_EntityMgr->ForAllOfType<Unit>([this](auto& obj)
+	m_pPlayer->Collisions().clear();
+	Collider * PlayerCollider = &m_pPlayer->Get<Collider>();
+	for (auto& it : m_colliders)
 	{
-		if (!m_pathMgr->PendingPaths())
+		Collider * TileCollider = it;
+		if (PlayerCollider == TileCollider)
+			continue;
+		m_pPlayer->GetState()->CheckMapCollision(TileCollider);
+		/*Collision collision = PlayerCollider->AABBCollision(TileCollider->AABB());
+		if (collision.intersecting)
 		{
-			obj.currentTile->Passable(obj.Moving());
-		}
-	  if (obj.Get<Transform>().Boundary().Overlaps(m_cam.GetViewFrame()))
-		{
-
-			obj.AddGroup(groupRender);
-			obj.Get<Transform>().Translate(-m_cam.GetPos());
-			obj.Get<SelectedRect>().Translate(-m_cam.GetPos());
-		}
-		else
-		{
-			obj.RemoveGroup(groupRender);
-		}
-
-	});
-	m_EntityMgr->ForAllOfType<GroupSelector>([this](auto& obj)
-	{
-		obj.Get<Transform>().Translate(-m_cam.GetPos());
-		obj.AddGroup(groupRender);
-	});
+			m_pPlayer->Collisions().push_back({ TileCollider,collision });
+		}*/
+	}
+	//m_pPlayer->ResolveCollisions();
 }
+	
+
 
 void Game::HandleMultiSelectedUnits()
 {
-	if (groupSelector->Active())
-	{
-		groupSelector->Drag(MouseWorldSpace());
-	}
-	else
-	{
-		if (groupSelector->SelectedUnits().size() > 0)
-		{
-			//currentUnit->Get<SelectedRect>().selected = false;
-			currentUnit = 0;
-			if (groupSelector->SelectedUnits().size() == 1)
-			{
-				currentUnit = groupSelector->SelectedUnits()[0];
-				groupSelector->FlushSelected();
-				currentUnit->Get<SelectedRect>().selected = true;
-			
-				return;
-			}
-			
-		}
-	}
+	
+	
 
 }
 
@@ -307,28 +242,20 @@ Vec2f Game::MouseWorldSpace()
 	return m_cam.ConvertToWorldSpace(Vec2f((float)window.mouse.GetPosX(), (float)window.mouse.GetPosY()));
 }
 
+void Game::DrawBackground()
+{
+	gfx.DrawSprite(D2D1::Matrix3x2F::Identity(), m_vpMain.GetViewRect().ToD2D(),
+		backGround->GetBitmap());
+
+	//gfx.DrawFilledRectangle(D2D1::Matrix3x2F::Identity(), m_vpMain.GetViewRect().ToD2D(),
+	//	D2D1::ColorF(.85f, .85f, .85f, 0.45f));
+
+}
+
 void Game::GetSelectedUnit(const Vec2f & pos)
 {
 	
-	m_EntityMgr->ForAllOfType<Unit>([this,pos](auto& obj)
-	{
-
-		if (obj.Get<Transform>().Boundary().Contains(pos))
-		{
-			groupSelector->FlushSelected();
-			if (!obj.Get<SelectedRect>().selected)
-			{
-				if(currentUnit)
-				   currentUnit->Get<SelectedRect>().selected = false;
-				obj.Get<SelectedRect>().selected = true;
-				currentUnit = &obj;
-				
-				return;
-			}
-		}
-		
-
-	});
+	
 	
 
 }

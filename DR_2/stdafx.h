@@ -47,18 +47,21 @@
 #include <future>
 #include <queue>
 #include <mutex>
-// user defined
-
-#include "errors.h"
-
-
 #include <unordered_map>
+// user defined
+#include "RandGen.h"
+#include "errors.h"
 #include "Iter.h"
 
 
 #define MAX_MAP_SIZE 80
+
 using  vstring = std::vector<std::string>;
 using  vint = std::vector<int>;
+using  vUnit = std::vector<class Unit*>;
+
+
+
 
 template<typename T,typename ARR>
 static std::size_t ElementCount(ARR& arr)
@@ -145,8 +148,7 @@ inline void SafeRelease(
 
 //////////////////////////////////////////////////////////
 
-const static int TILE_WIDTH = 64;
-const static int TILE_HEIGHT = 64;
+
 
 #ifndef D2_MAT3x2_IDENTITY
 #define D2_MATRIX_IDENTITY(m) { (m) = (D2D1::Matrix3x2F::Identity()); }

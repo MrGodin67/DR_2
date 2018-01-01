@@ -145,7 +145,9 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Animation.h" />
     <ClInclude Include="Arena.h" />
+    <ClInclude Include="BackGroundLayer.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="ChiliException.h" />
     <ClInclude Include="ChiliWin.h" />
@@ -161,20 +163,20 @@
     <ClInclude Include="Game.h" />
     <ClInclude Include="Graphics.h" />
     <ClInclude Include="Array.h" />
-    <ClInclude Include="GroupSelector.h" />
+    <ClInclude Include="Idle.h" />
+    <ClInclude Include="Input.h" />
     <ClInclude Include="InputManager.h" />
     <ClInclude Include="Iter.h" />
+    <ClInclude Include="Jump.h" />
     <ClInclude Include="keyboard.h" />
     <ClInclude Include="Locator.h" />
     <ClInclude Include="MapFileParser.h" />
     <ClInclude Include="MapTile.h" />
     <ClInclude Include="mouse.h" />
-    <ClInclude Include="newAStar.h" />
-    <ClInclude Include="PathComponent.h" />
-    <ClInclude Include="PathManager.h" />
+    <ClInclude Include="Player.h" />
+    <ClInclude Include="RandGen.h" />
     <ClInclude Include="Rect.h" />
     <ClInclude Include="Resource.h" />
-    <ClInclude Include="SelectedComponent.h" />
     <ClInclude Include="SimpleTimer.h" />
     <ClInclude Include="Sound.h" />
     <ClInclude Include="SoundEffect.h" />
@@ -182,13 +184,15 @@
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="TransformComponent.h" />
-    <ClInclude Include="Unit.h" />
     <ClInclude Include="Utils.h" />
     <ClInclude Include="Vec2.h" />
     <ClInclude Include="ViewPortMain.h" />
+    <ClInclude Include="Walking.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Animation.cpp" />
     <ClCompile Include="Arena.cpp" />
+    <ClCompile Include="BackGroundLayer.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Collider.cpp" />
     <ClCompile Include="D2D1Texture.cpp" />
@@ -200,16 +204,15 @@
     <ClCompile Include="ECS_Manager.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Graphics.cpp" />
-    <ClCompile Include="GroupSelector.cpp" />
+    <ClCompile Include="Idle.cpp" />
+    <ClCompile Include="Input.cpp" />
+    <ClCompile Include="Jump.cpp" />
     <ClCompile Include="Keyboard.cpp" />
     <ClCompile Include="Locator.cpp" />
     <ClCompile Include="MapFileParser.cpp" />
     <ClCompile Include="MapTile.cpp" />
     <ClCompile Include="Mouse.cpp" />
-    <ClCompile Include="newAStar.cpp" />
-    <ClCompile Include="PathComponent.cpp" />
-    <ClCompile Include="PathManager.cpp" />
-    <ClCompile Include="SelectedComponent.cpp" />
+    <ClCompile Include="Player.cpp" />
     <ClCompile Include="SimpleTimer.cpp" />
     <ClCompile Include="Sound.cpp" />
     <ClCompile Include="stdafx.cpp">
@@ -219,8 +222,8 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="TransformComponent.cpp" />
-    <ClCompile Include="Unit.cpp" />
     <ClCompile Include="ViewPortMain.cpp" />
+    <ClCompile Include="Walking.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="DR_2.rc" />

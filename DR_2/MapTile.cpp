@@ -2,8 +2,7 @@
 #include "MapTile.h"
 #include "Locator.h"
 #include "Collider.h"
-#include "Unit.h"
-#include "newAStar.h"
+
 Vec2f MapTile::dimensions = { 8.0f,8.0f };
 ID2D1Bitmap* MapTile::tileSet = nullptr;
 void MapTile::Init()
@@ -21,7 +20,7 @@ bool MapTile::Passable() const
 void MapTile::Passable(const bool & val)
 {
 	passable = val;
-	Locator::PathFinder()->GetPathNode(mapLocation)->passable = val;
+	
 }
 MapTile::MapTile(const Vec2f& position,
 	const RectF& srcRect, const bool& passable)
@@ -31,8 +30,8 @@ MapTile::MapTile(const Vec2f& position,
 	if (!passable)
 		Add<Collider>(position + (dimensions*0.5f), dimensions * 0.5f);
 
-	mapLocation.row = position.y / dimensions.height;
-	mapLocation.column = position.x / dimensions.width;
+	mapLocation.row = (int)(position.y / dimensions.height);
+	mapLocation.column = (int)(position.x / dimensions.width);
 
 }
 
@@ -66,7 +65,7 @@ Vec2i MapTile::MapLocation() const
 void MapTile::AddUnit(Unit * unit)
 {
 	auto& it = std::find(m_occupants.begin(), m_occupants.end(), unit);
-	if (it != m_occupants.end())
+	if (it == m_occupants.end())
 		m_occupants.push_back(unit);
 }
 
@@ -78,4 +77,14 @@ void MapTile::RemoveUnit(Unit * unit)
 		return unit == out_unit;
 	}), m_occupants.end());
 
+}
+
+std::vector<Unit*>& MapTile::Occupants()
+{
+	return m_occupants;
+}
+
+Vec2f MapTile::Center() const
+{
+	return Get<Transform>().Center();
 }

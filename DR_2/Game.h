@@ -6,9 +6,10 @@
 #include "MapFileParser.h"
 #include "Arena.h"
 #include "ECS_Manager.h"
-#include "PathManager.h"
-#include "Unit.h"
-#include "GroupSelector.h"
+#include "Player.h"
+#include "Collider.h"
+#include "BackGroundLayer.h"
+
 enum  VIEWPORTS : int
 {
 	vp_MAIN,
@@ -25,16 +26,17 @@ class Game
 	Camera m_cam;
 	std::unique_ptr<SoundManager> m_soundFX;
 	std::unique_ptr<ECS_Manager> m_EntityMgr;
-	std::unique_ptr<PathfindingManager> m_pathMgr;
 	std::unique_ptr<D2D1Texture> m_entityTileSet;
 
+	std::vector<Collider*> m_colliders;
 	Arena* m_currentArena = nullptr;
 	D2D1Texture * backGround;
 	D2D1Texture * sidePanel;
 	D2D1Texture * bases;
-	GroupSelector* groupSelector;
-	std::vector<Unit*> testUnits;
-	Unit* currentUnit = nullptr;
+	Player* m_pPlayer;
+	
+	BackGroundLayer* background1;
+	BackGroundLayer* background2;
 public:
 	Game(class Direct3DWindow& wnd);
 	~Game();
@@ -50,12 +52,14 @@ private:
 	void EndApp();
 	void LoadAudio();
 	void LoadLevel(const std::size_t& index);
+	void InitializePLayer();
 	void HandleMap();
 	void HandleInput();
-	void HandleUnits();
+	void FindCollisions();
 	void GetSelectedUnit(const Vec2f& pos);
 	void HandleMultiSelectedUnits();
 	Vec2i ConvertToTileLocation(const Vec2f& worldPos);
 	Vec2f MouseWorldSpace();
+	void DrawBackground();
 
 };

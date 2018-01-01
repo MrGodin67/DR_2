@@ -40,7 +40,10 @@ void MapFileParser::Parse()
 			data1.cellWidth = atoi(tokens[1].c_str());
 		if (tokens[0] == "tileheight")
 			data1.cellHeight = atoi(tokens[1].c_str());
-
+		if (tokens[0] == "drawheight")
+			data1.drawHeight = atoi(tokens[1].c_str());
+		if (tokens[0] == "drawwidth")
+			data1.drawWidth = atoi(tokens[1].c_str());
 		if (tokens[0] == "layer")
 		{
 			int layerIndex = atoi(tokens[1].c_str());

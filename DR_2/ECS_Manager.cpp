@@ -44,6 +44,13 @@ void GameObject::RemoveGroup(const GroupID & id)
 	m_groupBitSet[id] = false;
 }
 
+Vec2f GameObject::Center() const
+
+{
+	if (Has<Transform>())
+		return Get<Transform>().Center();
+	return{ 0.0f,0.0f };
+}
 
 
 
@@ -113,9 +120,19 @@ std::vector<MapTile*> ECS_Manager::GetMapPartition(const Vec2i & location, const
 			return std::vector<MapTile*>();
 		}
 	}
-	/*std::sort(list.begin(), list.end(), [location](MapTile* a, MapTile* b)
-	{
-		return (location - a->MapLocation()).LenSq() < (location - b->MapLocation()).LenSq();
-	});*/
+	
 	return list;
 }
+
+
+std::vector<GameObject*> ECS_Manager::GetGroupAction(const GroupID & id)
+{
+	return groupedByAction[id];
+}
+
+PlayerState * PlayerState::GetPrevious()
+{
+	return pPrevious;
+}
+
+

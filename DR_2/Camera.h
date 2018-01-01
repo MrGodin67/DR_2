@@ -8,22 +8,26 @@
 class Camera 
 {
 	
-public:// next = vp
+public:
 	Camera(const float& width, const float& height);
 	
-	Vec2f GetPos();
+	Vec2f GetPosition()const;
 	void ConfineToMap(const RectF& map_frame);
 	void Resize(const float& w, const float& h);
-	void UpdatePosition(const Vec2f& in_pos);
 	Vec2f ConvertToWorldSpace(const Vec2f& in_pos);
 	RectF GetViewFrame()const;
-	void Scroll(const Vec2f& dir);
+	void Update(const float& dt);
+	void SetFocusPoint(const Vec2f& focus_point);
+	void SetPanSpeed(const float& pan_speed);
+	Vec2f Movement() { return ScrollDiff; }
 private:
 	
 	Vec2f pos;
 	Vec2f center;
-	Vec2f scroll_pos;
+	Vec2f focalPoint; 
+	Vec2f ScrollDiff;
+	float scrollSpeed = 4.0f;
 	RectF mapFrame;
 	RectF viewFrame;
-	float screen_width, screen_height;
+	float view_width, view_height;
 };

@@ -20,7 +20,7 @@ class Arena : public GameObject
 public:
 	Arena(const LayerData& data);
 	virtual ~Arena();
-	vint Create(std::unique_ptr<ECS_Manager>& manager);
+	void Create(std::unique_ptr<ECS_Manager>& manager);
 	const LayerData& GetData() { return data; }
 	void Init()override;
 };

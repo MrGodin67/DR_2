@@ -4,34 +4,70 @@
 
 Camera::Camera(const float& width, const float& height)
 	:
-	pos({ 0.0f,0.0f }),
+	pos({ 1.0f,1.0f }),
 	center({ width / 2.0f,height / 2.0f }),
-	screen_width(width),
-	screen_height(height)
+	view_width(width),
+	view_height(height)
 {
 	viewFrame.left = pos.x;
 	viewFrame.top = pos.y;
-	viewFrame.right = viewFrame.left + screen_width;
-	viewFrame.bottom = viewFrame.top + screen_height;
+	viewFrame.right = viewFrame.left + view_width;
+	viewFrame.bottom = viewFrame.top + view_height;
 	Resize(width, height);
-	scroll_pos = center;
+	
 }
 
-void Camera::Scroll(const Vec2f& dir)
+//void Camera::Scroll(const Vec2f& dir)
+//{
+//	
+//	scroll_pos += dir;
+//	if (scroll_pos.x < center.x)scroll_pos.x = center.x;
+//	if (scroll_pos.x > mapFrame.right -center.x)scroll_pos.x = mapFrame.right - center.x;
+//	if (scroll_pos.y < center.y)scroll_pos.y = center.y;
+//	if (scroll_pos.y > mapFrame.bottom - center.y)scroll_pos.y = mapFrame.bottom - center.y;
+//
+//	
+//
+//}
+
+void Camera::Update(const float & dt)
 {
 	
-	scroll_pos += dir;
-	if (scroll_pos.x < center.x)scroll_pos.x = center.x;
-	if (scroll_pos.x > mapFrame.right -center.x)scroll_pos.x = mapFrame.right - center.x;
-	if (scroll_pos.y < center.y)scroll_pos.y = center.y;
-	if (scroll_pos.y > mapFrame.bottom - center.y)scroll_pos.y = mapFrame.bottom - center.y;
+	Vec2f p = pos;
+	pos += (focalPoint - pos) * scrollSpeed * dt;
+	ScrollDiff = (pos - p);
+	pos.x = std::max(pos.x, mapFrame.left);
+	pos.y = std::max(pos.y, mapFrame.top);
+	pos.x = std::min(pos.x, mapFrame.right - view_width);
+	pos.y = std::min(pos.y, mapFrame.bottom - view_height);
 
-	this->UpdatePosition(scroll_pos);
+
+	viewFrame.left = pos.x;
+	viewFrame.top = pos.y;
+	viewFrame.right = viewFrame.left + view_width;
+	viewFrame.bottom = viewFrame.top + view_height;
+
+	// Draw a portion of the mediumground based on the scroll amount
+	
 
 }
 
+void Camera::SetFocusPoint(const Vec2f & focus_pt)
+{
+	focalPoint = focus_pt -center;
+	
+}
 
-Vec2f Camera::GetPos() { return pos; }
+void Camera::SetPanSpeed(const float & pan_speed)
+{
+	scrollSpeed = pan_speed;
+}
+
+
+Vec2f Camera::GetPosition() const
+{ 
+	return pos; 
+}
 void Camera::ConfineToMap(const RectF& map_frame)
 { 
 	mapFrame = map_frame; 
@@ -48,28 +84,14 @@ RectF Camera::GetViewFrame() const
 
 void Camera::Resize(const float& w, const float& h)
 {
-	screen_width = w;
-	screen_height = h;
-	center = Vec2f(screen_width / 2, screen_height / 2);
+	view_width = w;
+	view_height = h;
+	center = Vec2f(view_width * 0.5f, view_height * 0.5f);
 	viewFrame.left = pos.x;
 	viewFrame.top = pos.y;
-	viewFrame.right = viewFrame.left + screen_width;
-	viewFrame.bottom = viewFrame.top + screen_height;
+	viewFrame.right = viewFrame.left + view_width;
+	viewFrame.bottom = viewFrame.top + view_height;
 
 };
 
-void Camera::UpdatePosition(const Vec2f& in_pos)
-{
-	pos = in_pos - center ;
-	
-	pos.x = std::max(pos.x, mapFrame.left);
-	pos.y = std::max(pos.y, mapFrame.top);
-	pos.x = std::min(pos.x, mapFrame.right - screen_width);
-	pos.y = std::min(pos.y, mapFrame.bottom - screen_height);
 
-
-	viewFrame.left = pos.x;
-	viewFrame.top = pos.y;
-	viewFrame.right = viewFrame.left + screen_width;
-	viewFrame.bottom = viewFrame.top + screen_height;
-}

@@ -6,6 +6,7 @@
 Transform::Transform( const Vec2f& position, const Vec2f& size)
 	:position(position),size(size)
 {
+	
 }
 
 
@@ -15,7 +16,8 @@ Transform::~Transform()
 
 void Transform::Update(const float & dt)
 {
-	position += velocity * acceleration * dt;
+	
+	position += velocity * dt;
 	center =  position + (size * 0.5f) ;
 }
 

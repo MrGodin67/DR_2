@@ -22,5 +22,7 @@ public:
 	Vec2i MapLocation()const;
 	void AddUnit(Unit* unit);
 	void RemoveUnit(Unit* unit);
+	std::vector<Unit*>& Occupants();
+	Vec2f Center()const;
 };
 

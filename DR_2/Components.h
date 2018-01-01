@@ -5,3 +5,5 @@
 #include "TransformComponent.h"
 //#include "Collider.h"
 
+static const float gGravity = 9.80f;
+

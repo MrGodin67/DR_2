@@ -13,7 +13,7 @@ class Transform :
 	D2D1_MATRIX_3X2_F matRotation = D2D1::Matrix3x2F::Identity();
 	D2D1_MATRIX_3X2_F matScaling = D2D1::Matrix3x2F::Identity();
 	D2D1_MATRIX_3X2_F matTranslation = D2D1::Matrix3x2F::Identity();
-
+	
 public:
 	Transform() = default;
 	Transform(const Vec2f& position,const Vec2f& size);
@@ -29,8 +29,12 @@ public:
 
 public:
 	Vec2f position = { 0.0f , 0.0f };
-	Vec2f velocity = { 0.0f , 0.0f };
+	Vec2f velocity = { 0.0001f , 0.0001f };
 	float rotation_angle = 0.0f;
 	float acceleration = 0.0f;
+	float friction = 0.98f;
+	Vec2f maxVelocity = {100.0f,100.0f};
+	
+	bool colliding = false;
 };
 

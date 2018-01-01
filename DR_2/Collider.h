@@ -1,14 +1,21 @@
 #pragma once
 #include "ECS_Manager.h"
 #include "TransformComponent.h"
+
+#define COLLISION_LEFT 1
+#define COLLISION_RIGHT 2
+#define COLLISION_TOP 3
+#define COLLISION_BOTTOM 4
+
 class Collision
 {
 public:
 	Vec2f distance = { 0.0f,0.0f };
 	bool intersecting = false;
+	int side = -1;
 	Collision() = default;
-	Collision(Vec2f dist, bool intersect)
-		:distance(dist), intersecting(intersect)
+	Collision(Vec2f dist, bool intersect, int side)
+		:distance(dist), intersecting(intersect),side(side)
 	{}
 };
 class BoundingBox
@@ -97,40 +104,84 @@ public:
 	}
 	virtual void Draw()override;
 	BoundingBox AABB() { return collisionBox; }
-	Sphere Sphere() { return collisionSphere; }
+	Sphere GetSphere() { return collisionSphere; }
 	Collision AABBCollision(const BoundingBox& other)
 	{
 		Vec2f distance = collisionBox.center - other.center;
 		distance = distance.Absolute();
 
 		Vec2f result = distance - (collisionBox.half_extents + other.half_extents);
-		return Collision(result, result.x < 0.0f && result.y < 0.0f);
-	};
-	void StaticCollisionCorrection(const BoundingBox& other, const Collision& collision)
-	{
 		Vec2f correction = other.Center() - collisionBox.center;
-		if (collision.distance.x > collision.distance.y)
+		int side;
+		if (distance.x > distance.y)
 		{
-			if (correction.x > 0.0f)
+			if (correction.x > 0.0f) // left
 			{
-				collisionBox.center.x += collision.distance.x;
+				side = COLLISION_RIGHT;
 			}
-			else
+			else // right
 			{
-				collisionBox.center.x += -collision.distance.x;
+			
+				side = COLLISION_LEFT;
 			}
 		}
 		else
 		{
-			if (correction.y > 0.0f)
+			if (correction.y > 0.0f) // bottom
+			{
+			
+				side = COLLISION_BOTTOM;
+			}
+			else // top
+			{
+				
+				side = COLLISION_TOP;
+			}
+		}
+		return Collision(result, result.x < 0.0f && result.y < 0.0f,side);
+	};
+	Collision Spherical(const Sphere& other);
+	void SphericalCollisionCorrection(class GameObject* other, const Collision& collision,bool isStatic = false);
+	int StaticCollisionCorrection(const BoundingBox& other, const Collision& collision)
+	{
+		Vec2f correction = other.Center() - collisionBox.center;
+		int side;
+		if (collision.distance.x > collision.distance.y)
+		{
+			if (correction.x > 0.0f) // left
+			{
+				collisionBox.center.x += collision.distance.x;
+				transform->velocity.x = 0.0f;
+			}
+			else // right
+			{
+				collisionBox.center.x += -collision.distance.x;
+				transform->velocity.x = 0.0f;
+			
+			}
+		}
+		else
+		{
+			if (correction.y > 0.0f) // bottom
 			{
 				collisionBox.center.y += collision.distance.y;
+				transform->velocity.y = 0.0f;
 			}
-			else
+			else // top
 			{
 				collisionBox.center.y += -collision.distance.y;
+				transform->velocity.y = 0.0f;
+				
 			}
 		}
 		transform->position = collisionBox.center + -(collisionBox.half_extents);
+		return -1;
 	}
+};
+
+struct CollisionPair
+{
+	Collider* collider;
+	Collision collision;
+	
 };

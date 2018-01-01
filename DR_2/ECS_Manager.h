@@ -119,13 +119,13 @@ public:
 	bool HasGroup(const GroupID& id)const;
 	void AddGroup(const GroupID& id);
 	void RemoveGroup(const GroupID& id);
-
+	Vec2f Center()const;
 };
 
 
 
 
-
+using GameObjectGroup = std::array<std::vector<GameObject*>, maxGroups>;
 
 enum GroupLabels : std::size_t
 {
@@ -133,6 +133,7 @@ enum GroupLabels : std::size_t
 	groupCollider,
 	groupMap,
 	groupLevel,
+	groupBackGround,
 	numberOfGroupLabels,
 	groupNone
 };
@@ -145,7 +146,7 @@ class ECS_Manager
 	friend class GameObject;
 	std::vector<std::unique_ptr<GameObject>> objects;
 	std::map<std::size_t, std::vector<GameObject*>> groupedByType;
-	std::array<std::vector<GameObject*>, maxGroups> groupedByAction;
+	GameObjectGroup groupedByAction;
 private:
 	template <typename T>
 	auto GetID() const noexcept
@@ -177,6 +178,7 @@ public:
 
 	class MapTile* GetTile(const Vec2i& location);
 	std::vector<MapTile*> GetMapPartition(const Vec2i& location, const int& objectCount);
+	
 	template <typename T, typename... TArgs>
 	T& AddObject(TArgs&&... mArgs)
 	{
@@ -190,7 +192,7 @@ public:
 		return *ent;
 	}
 	template <typename T, typename TPredicate>
-	void ForAllOfType(TPredicate&& mFunction)
+	void ForAllOfType(const TPredicate&& mFunction)
 	{
 		auto& vec(groupedByType[GetID<T>()]);
 
@@ -216,6 +218,10 @@ public:
 	}
 	virtual void Draw()
 	{
+		// draw background first
+		for (auto& it : groupedByAction[groupBackGround])
+			it->Draw();
+		// TODO : layers
 		for (auto& it : groupedByAction[groupRender])
 			it->Draw();
 	}
@@ -225,10 +231,32 @@ public:
 		groupedByAction[groupRender].clear();
 		for (auto& it : objects)
 		{
+			if (it->HasGroup(groupBackGround))
+			{
+				it->Update(dt);
+			}
+
 			if (it->HasGroup(groupMap))
 				continue;
 			it->Update(dt);
 		}
 	}
+	std::vector<GameObject*> GetGroupAction(const GroupID& id);
+};
+
+class Player;
+class PlayerState : public Component
+{
+protected:
+	PlayerState* pPrevious;
+	
+public:
+	
+	virtual void SetPrevious(PlayerState* state)
+	{pPrevious = state;};
+	PlayerState* GetPrevious();
+	virtual void Transition(std::size_t index) {};
+	virtual void Transition(PlayerState* state) {};
+	virtual void CheckMapCollision(class Collider* collider) = 0;
 };
 

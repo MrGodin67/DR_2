@@ -41,7 +41,6 @@ Vec2f ViewPort::GetViewTopLeft()
 }
 
 void ViewPort::BeginScene()
-
 {
 	//
 	Locator::D2DRenderTarget()->PushLayer(D2D1::LayerParameters(
