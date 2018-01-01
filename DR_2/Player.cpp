@@ -19,11 +19,9 @@ void Player::DoJump()
 	horizDirection == -1.0f ? Get<Animation>().StartSequenceByName("left_idle"):
 		Get<Animation>().StartSequenceByName("right_idle");
   	
-
-		
 	if (!stateFlags[psJumping])
 	{
-		Get<Transform>().velocity.y = -(gGravity* 30.0f);// *92.5f;
+		Get<Transform>().velocity.y = -(gGravity* 30.0f);
 		stateFlags[psJumping] = true;
 	}
 		
@@ -45,35 +43,11 @@ void Player::DoWalk()
 
 Player::Player(const Vec2f& pos,  const Vec2f& size)
 {
-	m_moveImage = std::make_unique<D2D1Texture>(Locator::D2DRenderTarget(), L"assets\\robo64x64.png");
-	assert(m_moveImage->GetBitmap());
+	
 	
 	Add<Transform>(pos, size);
-	Animation * an = &Add<Animation>();
-	Animation::Sequence seq;
-	seq.current_index = 0;
-	seq.frameDelay = 0.080f;
-	seq.image = m_moveImage->GetBitmap();
-	seq.srcRects.push_back(RectF(0.0f, 0.0f, 64.0f, 64.0f));
-	an->AddSequence("right_idle", seq);
-
-
-	seq.srcRects.clear();
-	seq.srcRects.push_back(RectF(64.0f, 0.0f, 128.0f, 64.0f));
-	seq.srcRects.push_back(RectF(128.0f, 0.0f, 192.0f, 64.0f));
-	seq.srcRects.push_back(RectF(192.0f, 0.0f, 256.0f, 64.0f));
-	an->AddSequence("right_walk", seq);
+	Add<Animation>();
 	
-	
-	seq.srcRects.clear();
-	seq.srcRects.push_back(RectF(192.0f, 128.0f, 256.0f, 192.0f));
-	an->AddSequence("left_idle", seq);
-
-	seq.srcRects.clear();
-	seq.srcRects.push_back(RectF(128.0f, 128.0f, 192.0f, 192.0f));
-	seq.srcRects.push_back(RectF(64.0f, 128.0f, 128.0f, 192.0f));
-	seq.srcRects.push_back(RectF(0.0f, 128.0f, 64.0f, 192.0f));
-	an->AddSequence("left_walk", seq);
 
 	
 }
@@ -88,7 +62,7 @@ void Player::Update(const float & dt)
 	CapVelocity();
 	
 	Get<Input>().Update(dt);
-	// do velocity mutations befor final update
+	// do velocity mutations before final update
 
 
 	
@@ -139,10 +113,8 @@ void Player::SetInputFlags(std::bitset<ieNumberOf>& flags)
 	inputFlags = flags;
 	if (inputFlags[ieLeft])
 	{
-
 		horizDirection = -1.0f;
 		DoWalk();
-		
 	}
 
 	if (inputFlags[ieRight])
@@ -172,11 +144,22 @@ void Player::ResolveCollision(Collider * other)
 	if (collision.intersecting)
 	{
 		thisCollider->StaticCollisionCorrection(other->AABB(), collision);
-		if (collision.side == COLLISION_BOTTOM)
+		switch (collision.side)
 		{
+		case COLLISION_LEFT:
+		case COLLISION_RIGHT:
+			Get<Transform>().velocity.x = 0.0f;
+			break;
+		case COLLISION_BOTTOM:
 			stateFlags[psJumping] = false;
-			
+			Get<Transform>().velocity.y = 0.0f;
+			break;
+		case COLLISION_TOP:
+			Get<Transform>().velocity.y = 0.0f;
+			break;
 		}
+
+		
 	}
 
 }

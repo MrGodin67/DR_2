@@ -28,6 +28,8 @@ class Game
 	std::unique_ptr<ECS_Manager> m_EntityMgr;
 	std::unique_ptr<D2D1Texture> m_entityTileSet;
 
+	std::unique_ptr<D2D1Texture> m_moveImage;
+
 	std::vector<Collider*> m_colliders;
 	Arena* m_currentArena = nullptr;
 	D2D1Texture * backGround;

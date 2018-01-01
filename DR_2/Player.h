@@ -14,8 +14,6 @@ enum PlayerStates : std::size_t
 class Player :
 	public GameObject
 {
-	std::unique_ptr<D2D1Texture> m_moveImage;
-	std::unique_ptr<D2D1Texture> m_jumpClimbImage;
 	std::bitset<ieNumberOf> inputFlags;
 	std::bitset<psNumberOf> stateFlags;
 	Vec2f maxVelocity = {100.0f,500.0f};

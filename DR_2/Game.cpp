@@ -5,6 +5,7 @@
 #include "MapTile.h"
 #include "Animation.h"
 #include "Collider.h"
+#include "Animation.h"
 static const vstring mapFilenames = 
 {
 	{"map1.txt"},
@@ -142,7 +143,8 @@ void Game::LoadLevel(const std::size_t& index)
 
 void Game::InitializePLayer()
 {
-	
+	m_moveImage = std::make_unique<D2D1Texture>(Locator::D2DRenderTarget(), L"assets\\robo64x64.png");
+	assert(m_moveImage->GetBitmap());
 	Vec2f size = { 32.0f,42.0f };
 	Vec2f position = { 100.0f,100.0f };
 	m_pPlayer = (Player*)&m_EntityMgr->AddObject<Player>(position,size);
@@ -151,6 +153,32 @@ void Game::InitializePLayer()
 	m_pPlayer->Add<Collider>(position + (size * 0.5f), size*0.5f);
 	m_pPlayer->Add<Input>(window.kbd, window.mouse);
 	m_pPlayer->AddGroup(groupMap);
+
+	Animation* an = &m_pPlayer->Get<Animation>();
+	Animation::Sequence seq;
+	seq.current_index = 0;
+	seq.frameDelay = 0.080f;
+	seq.image = m_moveImage->GetBitmap();
+	seq.srcRects.push_back(RectF(0.0f, 0.0f, 64.0f, 64.0f));
+	an->AddSequence("right_idle", seq);
+
+
+	seq.srcRects.clear();
+	seq.srcRects.push_back(RectF(64.0f, 0.0f, 128.0f, 64.0f));
+	seq.srcRects.push_back(RectF(128.0f, 0.0f, 192.0f, 64.0f));
+	seq.srcRects.push_back(RectF(192.0f, 0.0f, 256.0f, 64.0f));
+	an->AddSequence("right_walk", seq);
+
+
+	seq.srcRects.clear();
+	seq.srcRects.push_back(RectF(192.0f, 128.0f, 256.0f, 192.0f));
+	an->AddSequence("left_idle", seq);
+
+	seq.srcRects.clear();
+	seq.srcRects.push_back(RectF(128.0f, 128.0f, 192.0f, 192.0f));
+	seq.srcRects.push_back(RectF(64.0f, 128.0f, 128.0f, 192.0f));
+	seq.srcRects.push_back(RectF(0.0f, 128.0f, 64.0f, 192.0f));
+	an->AddSequence("left_walk", seq);
 }
 
 void Game::HandleMap()

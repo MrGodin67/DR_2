@@ -147,12 +147,12 @@ public:
 			if (correction.x > 0.0f)
 			{
 				collisionBox.center.x += collision.distance.x;
-				transform->velocity.x = 0.0f;
+				
 			}
 			else 
 			{
 				collisionBox.center.x += -collision.distance.x;
-				transform->velocity.x = 0.0f;
+			
 			
 			}
 		}
@@ -161,12 +161,12 @@ public:
 			if (correction.y > 0.0f)
 			{
 				collisionBox.center.y += collision.distance.y;
-				transform->velocity.y = 0.0f;
+				
 			}
 			else 
 			{
 				collisionBox.center.y += -collision.distance.y;
-				transform->velocity.y = 0.0f;
+				
 				
 			}
 		}
