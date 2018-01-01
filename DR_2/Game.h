@@ -9,6 +9,7 @@
 #include "Player.h"
 #include "Collider.h"
 #include "BackGroundLayer.h"
+#include "Emitter.h"
 
 enum  VIEWPORTS : int
 {
@@ -29,6 +30,8 @@ class Game
 	std::unique_ptr<D2D1Texture> m_entityTileSet;
 
 	std::unique_ptr<D2D1Texture> m_moveImage;
+	std::unique_ptr<D2D1Texture> m_moveImage2;
+	std::unique_ptr<D2D1Texture> m_particle;
 
 	std::vector<Collider*> m_colliders;
 	Arena* m_currentArena = nullptr;
@@ -39,6 +42,8 @@ class Game
 	
 	BackGroundLayer* background1;
 	BackGroundLayer* background2;
+
+	Emitter* emit;
 public:
 	Game(class Direct3DWindow& wnd);
 	~Game();

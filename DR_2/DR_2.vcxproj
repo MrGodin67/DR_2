@@ -160,6 +160,7 @@
     <ClInclude Include="DR_2.h" />
     <ClInclude Include="DXErr.h" />
     <ClInclude Include="ECS_Manager.h" />
+    <ClInclude Include="Emitter.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Graphics.h" />
     <ClInclude Include="Array.h" />
@@ -171,6 +172,7 @@
     <ClInclude Include="MapFileParser.h" />
     <ClInclude Include="MapTile.h" />
     <ClInclude Include="mouse.h" />
+    <ClInclude Include="Particle.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="RandGen.h" />
     <ClInclude Include="Rect.h" />
@@ -199,6 +201,7 @@
     <ClCompile Include="DR_2.cpp" />
     <ClCompile Include="DXErr.cpp" />
     <ClCompile Include="ECS_Manager.cpp" />
+    <ClCompile Include="Emitter.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Graphics.cpp" />
     <ClCompile Include="Input.cpp" />
@@ -207,6 +210,7 @@
     <ClCompile Include="MapFileParser.cpp" />
     <ClCompile Include="MapTile.cpp" />
     <ClCompile Include="Mouse.cpp" />
+    <ClCompile Include="Particle.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="SimpleTimer.cpp" />
     <ClCompile Include="Sound.cpp" />

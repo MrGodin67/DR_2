@@ -40,6 +40,12 @@
     <Filter Include="Objects\Player">
       <UniqueIdentifier>{4b755e81-ba42-4d6d-bf8e-2e56e627fd37}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Objects\Bouncer">
+      <UniqueIdentifier>{d9a5a20a-d043-4be5-99c4-078db20a5ad1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Objects\Emitter">
+      <UniqueIdentifier>{f1cf96e8-1544-40d1-ab5a-795bf5afd0b1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -165,6 +171,12 @@
     <ClInclude Include="BackGroundLayer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Emitter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Particle.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -243,6 +255,12 @@
       <Filter>ICS\Components</Filter>
     </ClCompile>
     <ClCompile Include="BackGroundLayer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Emitter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Particle.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

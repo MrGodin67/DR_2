@@ -34,7 +34,27 @@ Game::Game(Direct3DWindow & wnd)
 	InitializePLayer();
 	background1 = &m_EntityMgr->AddObject<BackGroundLayer>(Vec2f(0.0f, 0.0f), 0.0f, L"assets\\back1.png");
 	background2 = &m_EntityMgr->AddObject<BackGroundLayer>(Vec2f(0.0f, 500.0f - 128.0f ), 0.0f, L"assets\\back2.png");
+	m_particle = std::make_unique<D2D1Texture>(Locator::D2DRenderTarget(), L"assets\\particle.png");
 	
+	Emitter::EmitterDesc desc;
+	desc.destroyWhenDone = false;
+	desc.interval = 0.5f;
+	desc.position = Vec2f(400.0f, 600.f);
+	desc.timer = 0.0f;
+	
+	emit = &m_EntityMgr->AddObject<Emitter>(desc);
+	Animation::Sequence seq;
+	seq.current_index = 0llu;
+	seq.frameDelay = 0.0f;
+	seq.image = m_particle->GetBitmap();
+	seq.srcRects.push_back(RectF(0.0f, 0.0f, 256.0f, 256.0f));
+	seq.timer = 0.0f;
+	
+	for (int c = 0; c < 46; c++)
+	{
+		emit->AddPartical<Particle>(Vec2f(400.0f, 600.f), Vec2f(0.0f, 0.0f), Vec2f(64.0f, 64.0f),
+			seq, 8.0f, true, true);
+	}
 }
 
 Game::~Game()
@@ -66,9 +86,12 @@ HRESULT Game::ConstructScene(const float& deltaTime)
 	
 	
 	// update physics
-	
+	if ((m_pPlayer->Center() - emit->GetPosition()).Len() < 50.0f)
+		emit->Start();
+	else
+		emit->Stop();
 	m_EntityMgr->Update(deltaTime);
-	
+	emit->Update(deltaTime);
 	// handle physics results
 	HandleMap();
 	DoCollisions();
@@ -77,7 +100,7 @@ HRESULT Game::ConstructScene(const float& deltaTime)
 	// refresh objects and groups, removes dead or inactive ect.. 
 	m_EntityMgr->Refresh();
 	m_cam.Update(deltaTime);
-	//m_cam.UpdatePosition(m_cam)
+	emit->DoTransform(-m_cam.GetPosition());
 	m_soundFX->PlayQueue();
 
 	return S_OK;
@@ -94,6 +117,7 @@ HRESULT Game::RenderScene()
 	//DrawBackground();
 	m_EntityMgr->Draw();
 	 m_pPlayer->Draw();
+	 emit->Draw();
 	m_vpMain.EndScene();
 
 	m_vpUI.BeginScene();
@@ -145,6 +169,10 @@ void Game::InitializePLayer()
 {
 	m_moveImage = std::make_unique<D2D1Texture>(Locator::D2DRenderTarget(), L"assets\\robo64x64.png");
 	assert(m_moveImage->GetBitmap());
+	m_moveImage2 = std::make_unique<D2D1Texture>(Locator::D2DRenderTarget(), L"assets\\robo2_64x64.png");
+	assert(m_moveImage2->GetBitmap());
+
+
 	Vec2f size = { 32.0f,42.0f };
 	Vec2f position = { 100.0f,100.0f };
 	m_pPlayer = (Player*)&m_EntityMgr->AddObject<Player>(position,size);
@@ -153,6 +181,7 @@ void Game::InitializePLayer()
 	m_pPlayer->Add<Collider>(position + (size * 0.5f), size*0.5f);
 	m_pPlayer->Add<Input>(window.kbd, window.mouse);
 	m_pPlayer->AddGroup(groupMap);
+
 
 	Animation* an = &m_pPlayer->Get<Animation>();
 	Animation::Sequence seq;
@@ -179,6 +208,16 @@ void Game::InitializePLayer()
 	seq.srcRects.push_back(RectF(64.0f, 128.0f, 128.0f, 192.0f));
 	seq.srcRects.push_back(RectF(0.0f, 128.0f, 64.0f, 192.0f));
 	an->AddSequence("left_walk", seq);
+
+	seq.srcRects.clear();
+	seq.image = m_moveImage2->GetBitmap();
+	seq.srcRects.push_back(RectF(0.0f, 0.0f, 64.0f, 64.0f));
+	an->AddSequence("left_jump", seq);
+
+	seq.srcRects.clear();
+	seq.image = m_moveImage2->GetBitmap();
+	seq.srcRects.push_back(RectF(128.0f, 64.0f, 192.0f, 128.0f));
+	an->AddSequence("right_jump", seq);
 }
 
 void Game::HandleMap()

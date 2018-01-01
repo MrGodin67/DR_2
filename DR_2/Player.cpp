@@ -16,8 +16,8 @@ void Player::DoIdle()
 }
 void Player::DoJump()
 {
-	horizDirection == -1.0f ? Get<Animation>().StartSequenceByName("left_idle"):
-		Get<Animation>().StartSequenceByName("right_idle");
+	horizDirection == -1.0f ? Get<Animation>().StartSequenceByName("left_jump"):
+		Get<Animation>().StartSequenceByName("right_jump");
   	
 	if (!stateFlags[psJumping])
 	{
@@ -30,11 +30,14 @@ void Player::DoJump()
 
 void Player::DoWalk()
 {
+	if (!stateFlags[psJumping])
+	{
 
-	if (horizDirection == -1.0f)
-		Get<Animation>().StartSequenceByName("left_walk");
-	else
-		Get<Animation>().StartSequenceByName("right_walk");
+		if (horizDirection == -1.0f)
+			Get<Animation>().StartSequenceByName("left_walk");
+		else
+			Get<Animation>().StartSequenceByName("right_walk");
+	}
 	stateFlags[psIdle] = false;
 	stateFlags[psWalking] = true;
 }
@@ -91,11 +94,8 @@ void Player::Draw()
 	for (auto& it : m_components)
 		it->Draw();
 }
-
 void Player::Init()
-{
-}
-
+{}
 void Player::CapVelocity()
 {
 	Get<Transform>().velocity.x = std::max(-maxVelocity.x, Get<Transform>().velocity.x);
@@ -133,8 +133,6 @@ void Player::SetInputFlags(std::bitset<ieNumberOf>& flags)
 	}
 	
 }
-
-
 void Player::ResolveCollision(Collider * other)
 {
 	Collider* thisCollider = &Get<Collider>();
@@ -161,7 +159,11 @@ void Player::ResolveCollision(Collider * other)
 
 		
 	}
+	else
+	{
+		
+		
+	}
 
-}
-;
+};
 

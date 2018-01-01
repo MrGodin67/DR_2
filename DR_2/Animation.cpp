@@ -28,7 +28,7 @@ void Animation::Draw()
 {
 	Locator::Gfx()->DrawSprite(transform->Matrix(),
 		transform->Boundary().ToD2D(), currentSequence->image, 
-		&currentSequence->GetCurrentSrcRect().ToD2D());
+		&currentSequence->GetCurrentSrcRect().ToD2D(),transparency);
 
 }
 
@@ -55,5 +55,10 @@ void Animation::Init()
 Animation::Sequence * Animation::CurrentSequence()
 {
 	return currentSequence;
+}
+
+void Animation::SetTransparency(const float & value)
+{
+	transparency = value;
 }
 

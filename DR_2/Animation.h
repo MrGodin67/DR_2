@@ -22,7 +22,7 @@ public:
 	std::unordered_map<std::string, Sequence> sequences;
 	Sequence* currentSequence = nullptr;
 	int index = 0;
-	
+	float transparency = 1.0f;
 public:
 	Animation();
 	~Animation();
@@ -32,6 +32,7 @@ public:
 	void Update(const float& dt)override;
 	void Init()override;
 	Sequence* CurrentSequence();
+	void SetTransparency(const float& value);
 	
 };
 
