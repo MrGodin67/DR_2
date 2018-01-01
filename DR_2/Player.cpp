@@ -3,50 +3,42 @@
 #include "Locator.h"
 #include "Animation.h"
 #include "MapTile.h"
-#include "Idle.h"
-#include "Walking.h"
-#include "Jump.h"
+
 void Player::DoIdle()
 {
-	if (Get<Transform>().horizontalDirection == -1.0f)
-		Get<Animation>().StartSequenceByName("left_idle");
-	else
+	
+	horizDirection == -1.0f ? Get<Animation>().StartSequenceByName("left_idle") : 
 		Get<Animation>().StartSequenceByName("right_idle");
-	pCurrentState = states[psIdle];
-	Get<Transform>().horizontalDirection = 0.0f;
+	stateFlags[psWalking] = false;
+	stateFlags[psIdle] = true;
+	
+	
 }
 void Player::DoJump()
 {
-	if (jumped)return;
-  		if (Get<Transform>().horizontalDirection == -1.0f)
-			Get<Animation>().StartSequenceByName("left_idle");
-        else
-  			Get<Animation>().StartSequenceByName("right_idle");
+	horizDirection == -1.0f ? Get<Animation>().StartSequenceByName("left_idle"):
+		Get<Animation>().StartSequenceByName("right_idle");
+  	
 
 		
-			if (!Get<Transform>().jumping)
-			{
-				//Jump* jump = dynamic_cast<Jump*>(states[psJumping]);
-				Get<Transform>().velocity.y = -(gGravity* 30.0f);// *92.5f;
-               //	pCurrentState = states[psJumping];
-				Get<Transform>().jumping = true;
-			}
+	if (!stateFlags[psJumping])
+	{
+		Get<Transform>().velocity.y = -(gGravity* 30.0f);// *92.5f;
+		stateFlags[psJumping] = true;
+	}
 		
-	
+		
 }
 
 void Player::DoWalk()
 {
 
-	if (Get<Transform>().horizontalDirection == -1.0f)
+	if (horizDirection == -1.0f)
 		Get<Animation>().StartSequenceByName("left_walk");
 	else
 		Get<Animation>().StartSequenceByName("right_walk");
-
-	pCurrentState = states[psWalking];
-	
-	
-	
+	stateFlags[psIdle] = false;
+	stateFlags[psWalking] = true;
 }
 
 
@@ -83,11 +75,7 @@ Player::Player(const Vec2f& pos,  const Vec2f& size)
 	seq.srcRects.push_back(RectF(0.0f, 128.0f, 64.0f, 192.0f));
 	an->AddSequence("left_walk", seq);
 
-
-	states[psIdle] = &Add<Idle>();
-	states[psWalking] = &Add<Walking>(1.0f);
-	states[psJumping] = &Add<Jump>();
-	pCurrentState = states[psIdle];
+	
 }
 
 
@@ -101,7 +89,20 @@ void Player::Update(const float & dt)
 	
 	Get<Input>().Update(dt);
 	// do velocity mutations befor final update
-	pCurrentState->Update(dt);
+
+
+	
+	if (stateFlags[psWalking])
+	    Get<Transform>().velocity.x += (horizDirection * Get<Transform>().acceleration);
+
+	if (stateFlags[psIdle])
+	{
+		Get<Transform>().velocity.x *= Get<Transform>().friction;
+		if (fabsf(Get<Transform>().velocity.x) < 0.5f)
+			Get<Transform>().velocity.x = 0.0f;
+	}
+	
+
 	Get<Transform>().velocity.y += gGravity;
 	Get<Transform>().Update(dt);
 
@@ -138,52 +139,46 @@ void Player::SetInputFlags(std::bitset<ieNumberOf>& flags)
 	inputFlags = flags;
 	if (inputFlags[ieLeft])
 	{
-		Get<Transform>().horizontalDirection = -1.0f;
-		DoWalk();
-	}
-   if (inputFlags[ieRight])
-	{
-	   Get<Transform>().horizontalDirection = 1.0f;
+
+		horizDirection = -1.0f;
 		DoWalk();
 		
 	}
-    if (inputFlags[ieDown])
-   {
-	   //Get<Animation>().StartSequenceByName()
-   }
-  
-	if (inputFlags[ieSpace] && !jumped)
+
+	if (inputFlags[ieRight])
 	{
-		DoJump();
-		
-	} 
+		horizDirection = 1.0f;
+		DoWalk();
+	}
 	if (!inputFlags[ieLeft] && !inputFlags[ieRight] && !inputFlags[ieSpace])
-		DoIdle();
-	
-}
-void Player::SetState(std::size_t state_id)
-{
-	switch (state_id)
 	{
-	case psIdle:
 		DoIdle();
-		break;
-	case psWalking:
-		DoWalk();
-		break;
-	case psJumping:
+	}
+	if (inputFlags[ieSpace] && !stateFlags[psJumping])
+	{
 		DoJump();
-		break;
+
+	}
 	
-	};
 }
-PlayerState * Player::GetState()
+
+
+void Player::ResolveCollision(Collider * other)
 {
-	return dynamic_cast<PlayerState*>(pCurrentState);
-}
-float Player::HorizontalDirection() const
-{
-	return horizontalDirection;
+	Collider* thisCollider = &Get<Collider>();
+	if (other == thisCollider)
+		return;
+	Collision collision = thisCollider->AABBCollision(other->AABB());
+	if (collision.intersecting)
+	{
+		thisCollider->StaticCollisionCorrection(other->AABB(), collision);
+		if (collision.side == COLLISION_BOTTOM)
+		{
+			stateFlags[psJumping] = false;
+			
+		}
+	}
+
 }
 ;
 

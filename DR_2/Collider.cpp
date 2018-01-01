@@ -20,9 +20,9 @@ void Collider::SphericalCollisionCorrection(GameObject * other, const Collision 
 	Transform* ATrans = &owner->Get<Transform>();
 	Transform* BTrans = &other->Get<Transform>();
 	
-	Vec2f delta = ATrans->Center() - BTrans->Center();
+	Vec2f delta = collision.distance;
 	// minimum translation distance to push balls apart after intersecting
-	float distance = delta.Len();
+	float distance =  delta.Len();
 	Vec2f mtd = delta * 
 		(A->Get<Collider>().GetSphere().radius + 
 			B->Get<Collider>().GetSphere().radius - distance) / distance;
@@ -63,6 +63,6 @@ Collision Collider::Spherical(const Sphere & other)
 {
 	
 	float dist = (other.center - collisionSphere.center).LenSq();
-	return Collision({dist,dist}, dist < sq<float>(other.radius + collisionSphere.radius),0);
+	return Collision((other.center - collisionSphere.center), dist < sq<float>(other.radius + collisionSphere.radius),0);
 	
 }

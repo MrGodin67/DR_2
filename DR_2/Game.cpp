@@ -62,7 +62,7 @@ HRESULT Game::ConstructScene(const float& deltaTime)
 	m_cam.SetFocusPoint(m_pPlayer->Get<Transform>().Center());
 	m_pPlayer->Get<Transform>().Translate(-m_cam.GetPosition());
 	background2->Translate(Vec2f(-m_cam.GetPosition().x*0.15f, 0.0f));
-	background2->SetScroll(m_pPlayer->Get<Transform>().horizontalDirection*deltaTime);
+	
 	
 	// update physics
 	
@@ -70,7 +70,7 @@ HRESULT Game::ConstructScene(const float& deltaTime)
 	
 	// handle physics results
 	HandleMap();
-	FindCollisions();
+	DoCollisions();
 	//HandleUnits();
 	//~
 	// refresh objects and groups, removes dead or inactive ect.. 
@@ -201,19 +201,11 @@ void Game::HandleInput()
 	
 }
 
-void Game::FindCollisions()
+void Game::DoCollisions()
 {
-	
-	Collider * PlayerCollider = &m_pPlayer->Get<Collider>();
-	for (auto& it : m_colliders)
-	{
-		Collider * TileCollider = it;
-		if (PlayerCollider == TileCollider)
-			continue;
-		m_pPlayer->GetState()->CheckMapCollision(TileCollider);
-		
-	}
 
+	for (auto& it : m_colliders)
+		m_pPlayer->ResolveCollision(it);
 }
 	
 

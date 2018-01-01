@@ -34,7 +34,6 @@ public:
 	float acceleration = 0.0f;
 	float friction = 0.98f;
 	Vec2f maxVelocity = {100.0f,100.0f};
-	float horizontalDirection;
-	bool  jumping = false;
+	
 };
 

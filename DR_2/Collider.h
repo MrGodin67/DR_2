@@ -115,26 +115,23 @@ public:
 		int side;
 		if (distance.x > distance.y)
 		{
-			if (correction.x > 0.0f) // left
+			if (correction.x > 0.0f) 
 			{
 				side = COLLISION_RIGHT;
 			}
-			else // right
+			else 
 			{
-			
 				side = COLLISION_LEFT;
 			}
 		}
 		else
 		{
-			if (correction.y > 0.0f) // bottom
+			if (correction.y > 0.0f) 
 			{
-			
 				side = COLLISION_BOTTOM;
 			}
-			else // top
+			else 
 			{
-				
 				side = COLLISION_TOP;
 			}
 		}
@@ -145,15 +142,14 @@ public:
 	int StaticCollisionCorrection(const BoundingBox& other, const Collision& collision)
 	{
 		Vec2f correction = other.Center() - collisionBox.center;
-		int side;
 		if (collision.distance.x > collision.distance.y)
 		{
-			if (correction.x > 0.0f) // left
+			if (correction.x > 0.0f)
 			{
 				collisionBox.center.x += collision.distance.x;
 				transform->velocity.x = 0.0f;
 			}
-			else // right
+			else 
 			{
 				collisionBox.center.x += -collision.distance.x;
 				transform->velocity.x = 0.0f;
@@ -162,12 +158,12 @@ public:
 		}
 		else
 		{
-			if (correction.y > 0.0f) // bottom
+			if (correction.y > 0.0f)
 			{
 				collisionBox.center.y += collision.distance.y;
 				transform->velocity.y = 0.0f;
 			}
-			else // top
+			else 
 			{
 				collisionBox.center.y += -collision.distance.y;
 				transform->velocity.y = 0.0f;

@@ -163,11 +163,9 @@
     <ClInclude Include="Game.h" />
     <ClInclude Include="Graphics.h" />
     <ClInclude Include="Array.h" />
-    <ClInclude Include="Idle.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="InputManager.h" />
     <ClInclude Include="Iter.h" />
-    <ClInclude Include="Jump.h" />
     <ClInclude Include="keyboard.h" />
     <ClInclude Include="Locator.h" />
     <ClInclude Include="MapFileParser.h" />
@@ -187,7 +185,6 @@
     <ClInclude Include="Utils.h" />
     <ClInclude Include="Vec2.h" />
     <ClInclude Include="ViewPortMain.h" />
-    <ClInclude Include="Walking.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Animation.cpp" />
@@ -204,9 +201,7 @@
     <ClCompile Include="ECS_Manager.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Graphics.cpp" />
-    <ClCompile Include="Idle.cpp" />
     <ClCompile Include="Input.cpp" />
-    <ClCompile Include="Jump.cpp" />
     <ClCompile Include="Keyboard.cpp" />
     <ClCompile Include="Locator.cpp" />
     <ClCompile Include="MapFileParser.cpp" />
@@ -223,7 +218,6 @@
     </ClCompile>
     <ClCompile Include="TransformComponent.cpp" />
     <ClCompile Include="ViewPortMain.cpp" />
-    <ClCompile Include="Walking.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="DR_2.rc" />

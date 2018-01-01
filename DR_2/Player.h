@@ -17,11 +17,9 @@ class Player :
 	std::unique_ptr<D2D1Texture> m_moveImage;
 	std::unique_ptr<D2D1Texture> m_jumpClimbImage;
 	std::bitset<ieNumberOf> inputFlags;
+	std::bitset<psNumberOf> stateFlags;
 	Vec2f maxVelocity = {100.0f,500.0f};
-	float horizontalDirection;
-	std::array<Component*, psNumberOf> states;
-	Component* pCurrentState;
-	bool jumped = false;
+	float horizDirection = 0.0f;
 	void DoIdle();
 	void DoJump();
 	void DoWalk();
@@ -34,8 +32,6 @@ public:
 	void CapVelocity();
 	void SetMaxVelocity(const Vec2f& vel);
 	void SetInputFlags(std::bitset<ieNumberOf>& flags);
-	void SetState(std::size_t state_id);
-	PlayerState* GetState();
-	float HorizontalDirection()const;
+	void ResolveCollision(Collider* other);
 };
 

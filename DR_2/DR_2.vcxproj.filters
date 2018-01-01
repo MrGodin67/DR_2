@@ -162,15 +162,6 @@
     <ClInclude Include="Input.h">
       <Filter>ICS\Components</Filter>
     </ClInclude>
-    <ClInclude Include="Idle.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Walking.h">
-      <Filter>ICS\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="Jump.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="BackGroundLayer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -250,15 +241,6 @@
     </ClCompile>
     <ClCompile Include="Input.cpp">
       <Filter>ICS\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="Idle.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Walking.cpp">
-      <Filter>ICS\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="Jump.cpp">
-      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="BackGroundLayer.cpp">
       <Filter>Source Files</Filter>
