@@ -143,12 +143,12 @@ void Game::LoadLevel(const std::size_t& index)
 void Game::InitializePLayer()
 {
 	
-	Vec2f size = { 36.0f,42.0f };
+	Vec2f size = { 32.0f,42.0f };
 	Vec2f position = { 100.0f,100.0f };
 	m_pPlayer = (Player*)&m_EntityMgr->AddObject<Player>(position,size);
 	m_pPlayer->Get<Transform>().acceleration = 20.20f;
-	m_pPlayer->Get<Transform>().friction = 0.820f;
-	m_pPlayer->Add<Collider>(position + (size * 0.5f), size * 0.5f);
+	m_pPlayer->Get<Transform>().friction = 0.920f;
+	m_pPlayer->Add<Collider>(position + (size * 0.5f), size*0.5f);
 	m_pPlayer->Add<Input>(window.kbd, window.mouse);
 	m_pPlayer->AddGroup(groupMap);
 }
@@ -203,7 +203,7 @@ void Game::HandleInput()
 
 void Game::FindCollisions()
 {
-	m_pPlayer->Collisions().clear();
+	
 	Collider * PlayerCollider = &m_pPlayer->Get<Collider>();
 	for (auto& it : m_colliders)
 	{
@@ -211,13 +211,9 @@ void Game::FindCollisions()
 		if (PlayerCollider == TileCollider)
 			continue;
 		m_pPlayer->GetState()->CheckMapCollision(TileCollider);
-		/*Collision collision = PlayerCollider->AABBCollision(TileCollider->AABB());
-		if (collision.intersecting)
-		{
-			m_pPlayer->Collisions().push_back({ TileCollider,collision });
-		}*/
+		
 	}
-	//m_pPlayer->ResolveCollisions();
+
 }
 	
 

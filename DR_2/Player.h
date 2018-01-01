@@ -16,7 +16,6 @@ class Player :
 {
 	std::unique_ptr<D2D1Texture> m_moveImage;
 	std::unique_ptr<D2D1Texture> m_jumpClimbImage;
-	std::vector<CollisionPair> collisions;
 	std::bitset<ieNumberOf> inputFlags;
 	Vec2f maxVelocity = {100.0f,500.0f};
 	float horizontalDirection;
@@ -32,8 +31,6 @@ public:
 	virtual void Update(const float& dt)override;	
 	virtual void Draw()override;
 	virtual void Init()override;
-	std::vector<CollisionPair>& Collisions();
-	void ResolveCollisions();
 	void CapVelocity();
 	void SetMaxVelocity(const Vec2f& vel);
 	void SetInputFlags(std::bitset<ieNumberOf>& flags);

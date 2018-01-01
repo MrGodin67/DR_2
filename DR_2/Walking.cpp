@@ -15,14 +15,14 @@ Walking::~Walking()
 
 void Walking::Update(const float & dt)
 {
-	transform->velocity.x += (dir * transform->acceleration);
+	transform->velocity.x += (transform->horizontalDirection * transform->acceleration);
 }
 
 void Walking::Init()
 {
 	transform = &owner->Get<Transform>();
 	// dir will one of three states -1,0,1
-	transform->velocity.x = dir * fabsf(transform->velocity.x);
+	transform->velocity.x = transform->horizontalDirection * fabsf(transform->velocity.x);
 	
 }
 
@@ -38,12 +38,10 @@ void Walking::CheckMapCollision(Collider * collider)
 	if (collision.intersecting)
 	{
 		OwnerCollider->StaticCollisionCorrection(collider->AABB(), collision);
-		
+		if(collision.side == COLLISION_BOTTOM)
+		   owner->Get<Transform>().jumping = false;
 	}
-	/*else
-	{
-		Player* player = dynamic_cast<Player*>(owner);
-		player->SetState(psJumping);
-	}*/
+	
+	
 
 }

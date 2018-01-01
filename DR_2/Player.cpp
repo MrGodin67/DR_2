@@ -8,28 +8,28 @@
 #include "Jump.h"
 void Player::DoIdle()
 {
-	if (horizontalDirection == -1.0f)
+	if (Get<Transform>().horizontalDirection == -1.0f)
 		Get<Animation>().StartSequenceByName("left_idle");
 	else
 		Get<Animation>().StartSequenceByName("right_idle");
 	pCurrentState = states[psIdle];
-	jumped = false;
+
 }
 void Player::DoJump()
 {
 	if (jumped)return;
-  		if (horizontalDirection == 1.0f)
+  		if (Get<Transform>().horizontalDirection == -1.0f)
 			Get<Animation>().StartSequenceByName("left_idle");
         else
   			Get<Animation>().StartSequenceByName("right_idle");
 
 		
-			if (!jumped)
+			if (!Get<Transform>().jumping)
 			{
-				Jump* jump = dynamic_cast<Jump*>(states[psJumping]);
-				jump->ApplyForce(-gGravity*12.5f);
-               	pCurrentState = states[psJumping];
-  				jumped = true;
+				//Jump* jump = dynamic_cast<Jump*>(states[psJumping]);
+				Get<Transform>().velocity.y = -(gGravity* 30.0f);// *92.5f;
+               //	pCurrentState = states[psJumping];
+				Get<Transform>().jumping = true;
 			}
 		
 	
@@ -38,14 +38,14 @@ void Player::DoJump()
 void Player::DoWalk()
 {
 
-	if (horizontalDirection == 1.0f)
+	if (Get<Transform>().horizontalDirection == -1.0f)
 		Get<Animation>().StartSequenceByName("left_walk");
 	else
 		Get<Animation>().StartSequenceByName("right_walk");
 
 	pCurrentState = states[psWalking];
 	Walking* walk = dynamic_cast<Walking*>(states[psWalking]);
-	walk->SetDirection(horizontalDirection);
+	
 	
 }
 
@@ -121,43 +121,6 @@ void Player::Init()
 {
 }
 
-std::vector<CollisionPair>& Player::Collisions()
-{
-	return collisions;
-}
-
-void Player::ResolveCollisions()
-{
-	if (collisions.empty())
-	{
-		Get<Transform>().velocity.y += gGravity;
-		return;
-	}
-	/*if (collisions.size() > 1)
-	{
-		Vec2f ACenter = collisions[0].collider->AABB().Center();
-		Vec2f BCenter = collisions[1].collider->AABB().Center();
-		if (ACenter.y == BCenter.y)
-		{
-			Vec2f center = ACenter.MidpointWith(BCenter);
-			Vec2f extents = { MapTile::GetDimensions().x ,MapTile::GetDimensions().y };
-			BoundingBox box(center, extents);
-			Collision col = Get<Collider>().AABBCollision(box);
-			Get<Collider>().StaticCollisionCorrection(box, col);
-		
-		}
-		return;
-	}*/
-	bool bottom = false;
-	for (auto& it : collisions)
-	{
-		
-		 Get<Collider>().StaticCollisionCorrection(it.collider->AABB(), it.collision);
-		
-		
-	}
-	
-}
 void Player::CapVelocity()
 {
 	Get<Transform>().velocity.x = std::max(-maxVelocity.x, Get<Transform>().velocity.x);
@@ -175,35 +138,27 @@ void Player::SetInputFlags(std::bitset<ieNumberOf>& flags)
 	inputFlags = flags;
 	if (inputFlags[ieLeft])
 	{
-		horizontalDirection = -1.0f;
-		Get<Animation>().StartSequenceByName("left_walk");
-		pCurrentState = states[psWalking];
-		Walking* walk = dynamic_cast<Walking*>(states[psWalking]);
-		walk->SetDirection(horizontalDirection);
+		Get<Transform>().horizontalDirection = -1.0f;
+		DoWalk();
 	}
-   else if (inputFlags[ieRight])
+   if (inputFlags[ieRight])
 	{
-		horizontalDirection = 1.0f;
-		Get<Animation>().StartSequenceByName("right_walk");
-		pCurrentState = states[psWalking];
-		Walking* walk = dynamic_cast<Walking*>(states[psWalking]);
-		walk->SetDirection(horizontalDirection);
+	   Get<Transform>().horizontalDirection = 1.0f;
+		DoWalk();
 		
 	}
-    else if (inputFlags[ieDown])
+    if (inputFlags[ieDown])
    {
 	   //Get<Animation>().StartSequenceByName()
    }
-   else
-   {
-	   horizontalDirection = 0.0f;
-	   DoIdle();
-   }
+  
 	if (inputFlags[ieSpace] && !jumped)
 	{
 		DoJump();
 		
 	} 
+	if (!inputFlags[ieLeft] && !inputFlags[ieRight] && !inputFlags[ieSpace])
+		DoIdle();
 	
 }
 void Player::SetState(std::size_t state_id)

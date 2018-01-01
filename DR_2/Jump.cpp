@@ -20,6 +20,7 @@ void Jump::Init()
 void Jump::Update(const float & dt)
 {
 	transform->velocity.y += gGravity;
+	transform->velocity.x += (transform->horizontalDirection * transform->acceleration);
 }
 
 void Jump::ApplyForce(const float & inertia)

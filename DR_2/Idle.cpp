@@ -38,7 +38,8 @@ void Idle::CheckMapCollision(Collider * collider)
 	if (collision.intersecting)
 	{
 		OwnerCollider->StaticCollisionCorrection(collider->AABB(), collision);
-		
+		if (collision.side == COLLISION_BOTTOM)
+			owner->Get<Transform>().jumping = false;
 	}
 	/*else
 	{
