@@ -41,6 +41,7 @@ Game::Game(Direct3DWindow & wnd)
 	
 	emit = &m_EntityMgr->AddObject<Emitter>(Vec2f(400.0f, 600.f));
 	emit->SetSpawnInterval(0.06f);
+	emit->SetRandomVelocityConstrants(Vec2f(-100.0f, 100.0f), Vec2f(-200.0f, -100.0f));
 	Animation::Sequence seq;
 	seq.current_index = 0llu;
 	seq.frameDelay = 0.0f;
@@ -50,8 +51,9 @@ Game::Game(Direct3DWindow & wnd)
 	
 	for (int c = 0; c < 100; c++)
 	{
-		emit->AddPartical<Particle>(Vec2f(400.0f, 600.f), Vec2f(0.0f, 0.0f), Vec2f(32.0f, 32.0f),
+		Particle* p = &emit->AddPartical<Particle>(Vec2f(400.0f, 600.f), Vec2f(0.0f, 0.0f), Vec2f(32.0f, 32.0f),
 			seq, 6.20f, true, true);
+		p->SetGravity(gGravity* 0.25f);
 	}
 }
 

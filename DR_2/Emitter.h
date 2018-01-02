@@ -23,6 +23,11 @@ private:
 	bool m_destroyParticle = false;
 	bool m_loop = true;
 	bool m_destroyThisWhenDone = false;
+	
+	Vec2f m_velocityRandomConstrantsY = {-1.0f,1.0f};
+	Vec2f m_velocityRandomConstrantsX = {-1.0f,1.0f};
+	Vec2f m_velocity = { 0.0f,0.0f };
+	Vec2f m_wind = { 0.0f,0.0f };
 	//~ user defined
 
 	// private to this
@@ -30,58 +35,27 @@ private:
 	std::size_t m_activeParticleCount = 0llu;
 
 	bool m_initalized = false;
+	bool m_randomVelocityDescribed;
 	//~ private to this
-
+#ifdef OVERLOAD_TIMER
 	float m_timer = FLT_MAX;
-	RandG randG;
+#else
+    float m_timer = 0.0f;
+#endif
+RandG randG;
 private:
 	
-	virtual void Spawn()
-	{
-		for (auto& it : m_objects)
-		{
-			if (it->Done())
-			{
-				it->Reset(Get<Transform>().Center(), Vec2f(randG.Get<float>(-100.0f, 100.0f), randG.Get<float>(-200.0f, -150.0f)));
-				return;
-			}
-		}
-	}
-	void Refresh()
-	{
-		if (m_destroyParticle)
-		{
-			m_objects.erase(std::remove_if(m_objects.begin(), m_objects.end(),
-				[](Particle* p)
-			{
-				if (p->Done())
-					p->Destroy();// prepare for entity manager
-				return p->Done();
-			}
-			), m_objects.end());
-		};
-		std::sort(m_objects.begin(), m_objects.end(),
-			[](Particle* a, Particle* b)->bool
-		{
-			return (int)a->Done() < (int)b->Done();
-		});
-	}
+	virtual void Spawn();
+	virtual void Refresh();
+	
 	//~ private to this
 
 
 public:
 	Emitter() = default;
-	Emitter::Emitter(const Vec2f & spawnPosition)
-	{
-		Add<Transform>(spawnPosition, Vec2f(3.0f, 3.0f));
-
-	}
+	Emitter::Emitter(const Vec2f & spawnPosition);
 	
-	virtual Emitter::~Emitter()
-	{
-		for (auto& it : m_objects)
-			it->Destroy();
-	};
+	virtual Emitter::~Emitter();
 	template<typename ParticleType,typename... TArgs>
 	ParticleType& AddPartical(TArgs&&... inArgs)
 	{
@@ -91,95 +65,26 @@ public:
 	
 	
 	// virtual functions
-	void DoTransform(const Vec2f& offset)
-	{
-		for (auto& it : m_objects)
-			it->Get<Transform>().Translate(offset);
-	};
-	void Update(const float& dt)override
-	{
-		
-		Refresh();
-		if (this->m_initalized)
-		{
-			m_renderObjects.clear();
-			if ((m_timer += dt) >= m_interval)
-			{
-				Spawn();
-				m_timer = 0.0f;
-			}
-		
-			for (auto& iter : m_objects)
-			{
-				iter->Update(dt);
-				if (!iter->Done())
-				{
-					m_renderObjects.push_back(iter);
-				};
-			}
-		}
-		// allow objects to finish if this is stopped
-		else if(m_renderObjects.size() > 0)
-		{
-			for (auto& iter : m_objects)
-			{
-				iter->Update(dt);
-				
-			}
-		}
-		
-};
+	void DoTransform(const Vec2f& offset);
+	void Update(const float& dt)override;
 	
-	void Draw()override
-	{
-		for (auto& it : m_renderObjects)
-		{
-			if(!it->Done())
-			   it->Draw();
-		}
-	};
-	void Init()override
-	{
-		AddGroup(groupEmitters);
-	};
+	void Draw()override;
+	void Init()override;
 	void Start()
 	{
 		m_initalized = true;
 	};
-	void Stop(const bool& fullstop = false)
-	{
-		if (fullstop)
-		{
-			for (auto& it : m_objects)
-				it->Done(true);
-		}
-		m_initalized = false;
-	}
+	void Stop(const bool& fullstop = false);
 	//~ virtual functions
-	void SetLooping(const bool& value)
-	{
-		m_loop = value;
-	};
-	void SetSpawnInterval(const float& value)
-	{
-		m_interval = value;
-	};
-	void SetDoRandomSpawn(const bool& value)
-	{
-		m_doRandomSpawn = value;
-	};
-	void SetDoDestroyParticle(const bool& value)
-	{
-		m_destroyParticle = value;
-	};
-	void DoDestroyThisWhenDone(const bool& value)
-	{
-		m_destroyThisWhenDone = value;
-	};
-	Vec2f GetPosition()
-	{
-		return Get<Transform>().Center();
-	};
+	void SetLooping(const bool& value);
+	void SetSpawnInterval(const float& value);
+	void SetDoRandomSpawn(const bool& value);
+	void SetDoDestroyParticle(const bool& value);
+	void DoDestroyThisWhenDone(const bool& value);
+	Vec2f GetPosition();
+	void SetRandomVelocityConstrants(const Vec2f& X, const Vec2f& Y);
+	void SetVelocity(const Vec2f& value);
+	void SetWind(const Vec2f& value);
 	
 };
 

@@ -197,6 +197,10 @@ public:
 		result.y = (T)abs(y);
 		return result;
 	}
+	inline _Vec2 Zero()
+	{
+		return Vec2<T>((T)0, (T)0);
+	}
 public:
 	union 
 	{
@@ -214,6 +218,11 @@ public:
 		{
 			T column;
 			T row;
+		};
+		struct
+		{
+			T min;
+			T max;
 		};
 
 	};
@@ -248,4 +257,12 @@ inline std::vector< _Vec2<T> > CalculateIntersectionPoints(_Vec2<T> q, _Vec2<T> 
 		}
 	}
 	return points;
+}
+#include "RandGen.h"
+inline static Vec2f GetRandomVector()
+{
+	RandG randG;
+	Vec2f result = { randG.Get<float>(-100.0f,100.0f),randG.Get<float>(-100.0f,100.0f) };
+	result.Normalize();
+	return result;
 }
