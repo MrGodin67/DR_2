@@ -106,11 +106,11 @@ void Emitter::Update(const float & dt)
 }
 void Emitter::Draw()
 {
-	for (auto& it : m_renderObjects)
+	/*for (auto& it : m_renderObjects)
 	{
 		if (!it->Done())
 			it->Draw();
-	}
+	}*/
 }
 void Emitter::Init()
 {

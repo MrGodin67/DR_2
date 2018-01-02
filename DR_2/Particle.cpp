@@ -57,6 +57,8 @@ void Particle::Reset(const Vec2f & pos, const Vec2f & vel, const float & zScaler
 void Particle::Update(const float & dt)
 {
 	
+
+	
 	
 	if (!done)
 	{
@@ -82,7 +84,17 @@ void Particle::Update(const float & dt)
 				float result;
 				sign < 0.0f ? result = 1.0f + scaler : result = 1.0f - scaler;
 				Get<Transform>().Scale({ result,result });
-				
+
+				if (sign < 0.0f)
+				{
+					if (!HasGroup(groupLayerFront))
+					    AddGroup(groupLayerFront);
+				}
+				else
+				{
+					if (!HasGroup(groupLayerBack))
+					   AddGroup(groupLayerBack);
+				}
 			}
 		}
 		else
@@ -90,15 +102,19 @@ void Particle::Update(const float & dt)
 			done = true;
 			Get<Transform>().Scale({ 1.0f,1.0f });
 			ZScaler2 = 1.0f;
+			if (HasGroup(groupLayerBack))
+				RemoveGroup(groupLayerBack);
+			if (HasGroup(groupLayerFront))
+				RemoveGroup(groupLayerFront);
 		}
 	}
 }
 
-void Particle::Draw()
-{
-	if (!done)
-		Get<Animation>().Draw();
-}
+//void Particle::Draw()
+//{
+//	if (!done)
+//		Get<Animation>().Draw();
+//}
 
 void Particle::Init()
 {

@@ -26,7 +26,7 @@ public:
 	void SetDoScale(const bool& value);
 	virtual void Reset(const Vec2f& pos, const Vec2f& vel, const float& zScaler);
 	void Update(const float& dt)override;
-	void Draw()override;
+	//void Draw()override;
 	void Init()override;
 	
 };
