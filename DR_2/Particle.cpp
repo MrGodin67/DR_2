@@ -38,6 +38,11 @@ void Particle::SetGravity(const float & gravity)
 	this->gravity = gravity;
 }
 
+void Particle::SetDoScale(const bool & value)
+{
+	doScale = value;
+}
+
 void Particle::Reset(const Vec2f & pos, const Vec2f & vel, const float & zScaler)
 {
 	Get<Transform>().position = pos;
@@ -51,6 +56,8 @@ void Particle::Reset(const Vec2f & pos, const Vec2f & vel, const float & zScaler
 
 void Particle::Update(const float & dt)
 {
+	
+	
 	if (!done)
 	{
 		if ((life -= dt) > 0.0f)
@@ -58,18 +65,25 @@ void Particle::Update(const float & dt)
 
 			if (diffuse)
 			{
-				float trans = life / lifeSpan;
-				Get<Animation>().SetTransparency(trans);
-
+				Get<Animation>().SetTransparency(life / lifeSpan);
 			}
 			Get<Transform>().velocity.y += gravity;
 			Get<Transform>().Update(dt);
 			if (doRotate)
 			{
-				Get<Transform>().rotation_angle = Get<Transform>().velocity.Angle();
+				Vec2f v = Get<Transform>().velocity;
+				Get<Transform>().rotation_angle = v.Normalize().Angle();
 				Get<Transform>().Rotate();
 			}
-
+			if (doScale)
+			{
+				float sign = Sign<float>(Zscaler);
+				float scaler = (1.0f - (life / lifeSpan));
+				float result;
+				sign < 0.0f ? result = 1.0f + scaler : result = 1.0f - scaler;
+				Get<Transform>().Scale({ result,result });
+				
+			}
 		}
 		else
 		{

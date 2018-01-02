@@ -136,6 +136,8 @@ enum GroupLabels : std::size_t
 	groupBackGround,
 	groupParticle,
 	groupEmitters,
+	groupLayerFront,
+	groupLayerBack,
 	numberOfGroupLabels,
 	groupNone
 };
@@ -164,6 +166,7 @@ private:
 			return !p->Alive();
 		}),std::end(cont));
 	}
+public:
 	template <typename TContainer>
 	void CleanUpGroups(TContainer& cont,const std::size_t& id)
 	{

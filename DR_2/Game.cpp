@@ -54,6 +54,7 @@ Game::Game(Direct3DWindow & wnd)
 		Particle* p = &emit->AddPartical<Particle>(Vec2f(400.0f, 600.f), Vec2f(0.0f, 0.0f), Vec2f(32.0f, 32.0f),
 			seq, 6.20f, true, true);
 		p->SetGravity(gGravity* 0.25f);
+		p->SetDoScale(true);
 	}
 }
 
@@ -96,6 +97,7 @@ HRESULT Game::ConstructScene(const float& deltaTime)
 	emit->Update(deltaTime);
 	emit->DoTransform(-m_cam.GetPosition());
 	// handle physics results
+	//m_EntityMgr->Refresh();
 	HandleMap();
 	DoCollisions();
 	//HandleUnits();
@@ -226,6 +228,12 @@ void Game::InitializePLayer()
 void Game::HandleMap()
 {
 	m_colliders.clear();
+	auto& back_vec = m_EntityMgr->GetGroupAction(groupLayerBack);
+	
+	for (int i : Iterate(0, (int)back_vec.size()))
+	{
+		back_vec[i]->AddGroup(groupRender);
+	}
 	m_EntityMgr->ForAllOfType<MapTile>([this](auto& obj)
 	{
 
@@ -242,6 +250,12 @@ void Game::HandleMap()
 		}
 
 	});
+	auto& front_vec = m_EntityMgr->GetGroupAction(groupLayerFront);
+	
+	for (int i : Iterate(0, (int)front_vec.size()))
+	{
+		front_vec[i]->AddGroup(groupRender);
+	}
 }
 
 void Game::HandleInput()

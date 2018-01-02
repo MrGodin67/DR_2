@@ -10,6 +10,7 @@ protected:
 	bool diffuse;
 	bool doRotate = false;
 	bool done = true;
+	bool doScale = false;
 	float Zscaler = 1.0f;
 	float ZScaler2 = 1.0f;
 	float gravity = 0.0f;
@@ -22,6 +23,7 @@ public:
 	bool Done()const;
 	void Done(const bool& value);
 	void SetGravity(const float& gravity);
+	void SetDoScale(const bool& value);
 	virtual void Reset(const Vec2f& pos, const Vec2f& vel, const float& zScaler);
 	void Update(const float& dt)override;
 	void Draw()override;
