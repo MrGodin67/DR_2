@@ -1,55 +1,96 @@
 #pragma once
-#include "Components.h"
+#include "ECS_Manager.h"
+
 #include "Particle.h"
-#include "TransformComponent.h"
-class Emitter :
-	public GameObject
+
+
+#define OVERLOAD_TIMER
+
+class Emitter : public GameObject
 {
+private:
 	std::vector<Particle*> m_objects;
+	std::vector<Particle*> m_renderObjects;
+
+	// user defined
 	
-public:
-	struct EmitterDesc
-	{
-		float timer;
-		float interval;
-		Vec2f position;
-		std::size_t maxSpawnCount;
-		bool destroyWhenDone = false;
-		bool randomSpawnVel = false;
-		bool active = false;
-	};
-	EmitterDesc data;
-	std::size_t spawnCount;
+	float m_interval = 0.0f;
+	float m_particleLifeSpan = 0.0f;
+		
+	std::size_t m_maxParticles = 0llu;
+		
+	bool m_doRandomSpawn = true;
+	bool m_destroyParticle = false;
+	bool m_loop = true;
+	bool m_destroyThisWhenDone = false;
+	//~ user defined
+
+	// private to this
+
+	std::size_t m_activeParticleCount = 0llu;
+
+	bool m_initalized = false;
+	//~ private to this
+
+	float m_timer = FLT_MAX;
 	RandG randG;
+private:
+	
+	virtual void Spawn()
+	{
+		for (auto& it : m_objects)
+		{
+			if (it->Done())
+			{
+				it->Reset(Get<Transform>().Center(), Vec2f(randG.Get<float>(-100.0f, 100.0f), randG.Get<float>(-200.0f, -150.0f)));
+				return;
+			}
+		}
+	}
 	void Refresh()
 	{
-		m_objects.erase(std::remove_if(m_objects.begin(),m_objects.end(),
-			[](Particle* p) 
+		if (m_destroyParticle)
 		{
-			if(p->Done())
-				p->Destroy();// prepare for entity manager
-			return p->Done();
-		}
-		), m_objects.end());
+			m_objects.erase(std::remove_if(m_objects.begin(), m_objects.end(),
+				[](Particle* p)
+			{
+				if (p->Done())
+					p->Destroy();// prepare for entity manager
+				return p->Done();
+			}
+			), m_objects.end());
+		};
+		std::sort(m_objects.begin(), m_objects.end(),
+			[](Particle* a, Particle* b)->bool
+		{
+			return (int)a->Done() < (int)b->Done();
+		});
 	}
-public:
-	Emitter(EmitterDesc& desc)
-		:data(desc)
-	{
-		Add<Transform>(desc.position,Vec2f(32.0f,32.0f));
+	//~ private to this
 
-	};
-	virtual ~Emitter() 
+
+public:
+	Emitter() = default;
+	Emitter::Emitter(const Vec2f & spawnPosition)
+	{
+		Add<Transform>(spawnPosition, Vec2f(3.0f, 3.0f));
+
+	}
+	
+	virtual Emitter::~Emitter()
 	{
 		for (auto& it : m_objects)
 			it->Destroy();
 	};
-	template<typename Type,typename... TArgs>
-	Type& AddPartical(TArgs&&... inArgs)
+	template<typename ParticleType,typename... TArgs>
+	ParticleType& AddPartical(TArgs&&... inArgs)
 	{
-		m_objects.push_back( &manager->AddObject<Particle>(std::forward<TArgs>(inArgs)...));
+		m_objects.push_back( &manager->AddObject<ParticleType>(std::forward<TArgs>(inArgs)...));
 		return *m_objects.back();
-	}
+	};
+	
+	
+	// virtual functions
 	void DoTransform(const Vec2f& offset)
 	{
 		for (auto& it : m_objects)
@@ -57,68 +98,89 @@ public:
 	};
 	void Update(const float& dt)override
 	{
-		if (data.destroyWhenDone)
-			Refresh();
-		for (auto& i : m_objects)
+		
+		Refresh();
+		if (this->m_initalized)
 		{
-			
-			if (i->Done())
-			{
-				if (!data.destroyWhenDone)
-				{
-					std::swap(i, m_objects.back());
-				}
-				
-			}
-			
-			i->Update(dt);
-			
-		}
-		if (data.active)
-		{
-			if ((data.timer += dt) >= data.interval)
+			m_renderObjects.clear();
+			if ((m_timer += dt) >= m_interval)
 			{
 				Spawn();
-				data.timer = 0.0f;
+				m_timer = 0.0f;
 			}
-		}
-	};
-	void Spawn()
-	{
-		for (auto& i : m_objects)
-		{
-			if (i->Done())
+		
+			for (auto& iter : m_objects)
 			{
-				i->Reset(data.position, Vec2f(randG.Get<float>(-100.0f, 100.0f), randG.Get<float>(-100.0f, -50.0f)));
-				std::swap(i, m_objects.back());
-				return;
+				iter->Update(dt);
+				if (!iter->Done())
+				{
+					m_renderObjects.push_back(iter);
+				};
 			}
 		}
-	}
+		// allow objects to finish if this is stopped
+		else if(m_renderObjects.size() > 0)
+		{
+			for (auto& iter : m_objects)
+			{
+				iter->Update(dt);
+				
+			}
+		}
+		
+};
+	
 	void Draw()override
 	{
-		for (auto& i : m_objects)
+		for (auto& it : m_renderObjects)
 		{
-			if(!i->Done())
-			   i->Draw();
+			if(!it->Done())
+			   it->Draw();
 		}
 	};
 	void Init()override
 	{
-		AddGroup(groupMap);
+		AddGroup(groupEmitters);
 	};
 	void Start()
 	{
-		data.active = true;
+		m_initalized = true;
 	};
-	void Stop()
+	void Stop(const bool& fullstop = false)
 	{
-		data.active = false;
+		if (fullstop)
+		{
+			for (auto& it : m_objects)
+				it->Done(true);
+		}
+		m_initalized = false;
 	}
+	//~ virtual functions
+	void SetLooping(const bool& value)
+	{
+		m_loop = value;
+	};
+	void SetSpawnInterval(const float& value)
+	{
+		m_interval = value;
+	};
+	void SetDoRandomSpawn(const bool& value)
+	{
+		m_doRandomSpawn = value;
+	};
+	void SetDoDestroyParticle(const bool& value)
+	{
+		m_destroyParticle = value;
+	};
+	void DoDestroyThisWhenDone(const bool& value)
+	{
+		m_destroyThisWhenDone = value;
+	};
 	Vec2f GetPosition()
 	{
 		return Get<Transform>().Center();
-	}
-
+	};
+	
 };
+
 

@@ -134,6 +134,8 @@ enum GroupLabels : std::size_t
 	groupMap,
 	groupLevel,
 	groupBackGround,
+	groupParticle,
+	groupEmitters,
 	numberOfGroupLabels,
 	groupNone
 };
@@ -236,7 +238,7 @@ public:
 				it->Update(dt);
 			}
 
-			if (it->HasGroup(groupMap))
+			if (it->HasGroup(groupMap) || it->HasGroup(groupParticle))
 				continue;
 			it->Update(dt);
 		}

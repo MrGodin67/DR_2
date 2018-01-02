@@ -10,6 +10,7 @@
 #include "Collider.h"
 #include "BackGroundLayer.h"
 #include "Emitter.h"
+#include "Particle.h"
 
 enum  VIEWPORTS : int
 {

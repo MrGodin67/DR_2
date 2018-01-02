@@ -6,6 +6,7 @@
 #include "Animation.h"
 #include "Collider.h"
 #include "Animation.h"
+#include "Particle.h"
 static const vstring mapFilenames = 
 {
 	{"map1.txt"},
@@ -36,13 +37,10 @@ Game::Game(Direct3DWindow & wnd)
 	background2 = &m_EntityMgr->AddObject<BackGroundLayer>(Vec2f(0.0f, 500.0f - 128.0f ), 0.0f, L"assets\\back2.png");
 	m_particle = std::make_unique<D2D1Texture>(Locator::D2DRenderTarget(), L"assets\\particle.png");
 	
-	Emitter::EmitterDesc desc;
-	desc.destroyWhenDone = false;
-	desc.interval = 0.5f;
-	desc.position = Vec2f(400.0f, 600.f);
-	desc.timer = 0.0f;
 	
-	emit = &m_EntityMgr->AddObject<Emitter>(desc);
+	
+	emit = &m_EntityMgr->AddObject<Emitter>(Vec2f(400.0f, 600.f));
+	emit->SetSpawnInterval(0.06f);
 	Animation::Sequence seq;
 	seq.current_index = 0llu;
 	seq.frameDelay = 0.0f;
@@ -50,10 +48,10 @@ Game::Game(Direct3DWindow & wnd)
 	seq.srcRects.push_back(RectF(0.0f, 0.0f, 256.0f, 256.0f));
 	seq.timer = 0.0f;
 	
-	for (int c = 0; c < 46; c++)
+	for (int c = 0; c < 100; c++)
 	{
-		emit->AddPartical<Particle>(Vec2f(400.0f, 600.f), Vec2f(0.0f, 0.0f), Vec2f(64.0f, 64.0f),
-			seq, 8.0f, true, true);
+		emit->AddPartical<Particle>(Vec2f(400.0f, 600.f), Vec2f(0.0f, 0.0f), Vec2f(32.0f, 32.0f),
+			seq, 6.20f, true, true);
 	}
 }
 
@@ -81,17 +79,20 @@ HRESULT Game::ConstructScene(const float& deltaTime)
 	HandleInput();
 	m_pPlayer->Update(deltaTime);
 	m_cam.SetFocusPoint(m_pPlayer->Get<Transform>().Center());
+	m_cam.Update(deltaTime);
+	
 	m_pPlayer->Get<Transform>().Translate(-m_cam.GetPosition());
 	background2->Translate(Vec2f(-m_cam.GetPosition().x*0.15f, 0.0f));
 	
 	
 	// update physics
-	if ((m_pPlayer->Center() - emit->GetPosition()).Len() < 50.0f)
+	if ((m_pPlayer->Center() - emit->GetPosition()).Len() < 100.0f)
 		emit->Start();
 	else
 		emit->Stop();
 	m_EntityMgr->Update(deltaTime);
 	emit->Update(deltaTime);
+	emit->DoTransform(-m_cam.GetPosition());
 	// handle physics results
 	HandleMap();
 	DoCollisions();
@@ -99,8 +100,8 @@ HRESULT Game::ConstructScene(const float& deltaTime)
 	//~
 	// refresh objects and groups, removes dead or inactive ect.. 
 	m_EntityMgr->Refresh();
-	m_cam.Update(deltaTime);
-	emit->DoTransform(-m_cam.GetPosition());
+	
+	
 	m_soundFX->PlayQueue();
 
 	return S_OK;

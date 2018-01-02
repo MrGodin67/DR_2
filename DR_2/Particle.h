@@ -1,5 +1,5 @@
 #pragma once
-#include "ECS_Manager.h"
+#include "Components.h"
 #include "Animation.h"
 class Particle :
 	public GameObject
@@ -8,8 +8,8 @@ protected:
 	float lifeSpan;
 	float life = 0.0f;
 	bool diffuse;
-	bool spawned = false;
 	bool doRotate = false;
+	bool done = true;
 public:
 	Particle() = default;
 	Particle(const Vec2f& pos, const Vec2f& vel, const Vec2f& size,
@@ -22,38 +22,51 @@ public:
 		Add<Animation>().AddSequence("default",seq);
 	};
 	virtual ~Particle();
-	bool Done() { return life <= 0.0f; }
+	bool Done()const { return done; }
+	void Done(const bool& value) { done = value; }
 	void Reset(const Vec2f& pos, const Vec2f& vel)
 	{ 
 		Get<Transform>().position = pos;
 		Get<Transform>().velocity = vel;
 		life = lifeSpan;
-		spawned = true;
+		done = false;
+		
 	}
 	void Update(const float& dt)override
 	{
-		
-			life -= dt;
-			spawned = !Done();
-			if (doRotate)
-			{
-				Get<Transform>().rotation_angle = Get<Transform>().velocity.Angle();
-				Get<Transform>().Rotate();
-			}
-			if (diffuse && !Done())
+		if (!done)
+		{
+			if ((life -= dt) > 0.0f)
 			{
 
-				Get<Animation>().SetTransparency(life / lifeSpan);
+				if (diffuse)
+				{
+					float trans = life / lifeSpan;
+					Get<Animation>().SetTransparency(trans);
 
+				}
+				Get<Transform>().velocity.y += gGravity * 0.15f;
+				Get<Transform>().Update(dt);
+				if (doRotate)
+				{
+					Get<Transform>().rotation_angle = Get<Transform>().velocity.Angle();
+					Get<Transform>().Rotate();
+				}
 			}
-			Get<Transform>().velocity.y += gGravity * 0.025f;
-			Get<Transform>().Update(dt);
-		
+			else
+			{
+				done = true;
+			}
+		}
 	}
 	void Draw()override
 	{
-		if(spawned)
+		if(!done)
 		   Get<Animation>().Draw();
+	}
+	void Init()override
+	{
+		AddGroup(groupParticle);
 	}
 	
 };
