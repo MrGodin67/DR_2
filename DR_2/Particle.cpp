@@ -5,12 +5,12 @@
 
 
 
-Particle::Particle(const Vec2f & pos, const Vec2f & vel, const Vec2f & size, 
+Particle::Particle( const Vec2f & size, 
 	const Animation::Sequence & seq, const float & lifeSpan, const bool & diffuse, 
 	const bool & doRotate)
 	:lifeSpan(lifeSpan), life(lifeSpan), diffuse(diffuse), doRotate(doRotate)
 {
-	Add<Transform>(pos, size).velocity = vel;
+	Add<Transform>(Vec2f(), size);
 	Get<Transform>().acceleration = 120.0f;
 	Add<Animation>().AddSequence("default", seq);
 };

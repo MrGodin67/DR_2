@@ -16,7 +16,7 @@ protected:
 	float gravity = 0.0f;
 public:
 	Particle() = default;
-	Particle(const Vec2f& pos, const Vec2f& vel, const Vec2f& size,
+	Particle( const Vec2f& size,
 		const Animation::Sequence& seq, const float& lifeSpan, const bool& diffuse,
 		const bool& doRotate);
 	virtual ~Particle();

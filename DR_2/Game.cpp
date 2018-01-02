@@ -39,7 +39,7 @@ Game::Game(Direct3DWindow & wnd)
 	
 	
 	
-	emit = &m_EntityMgr->AddObject<Emitter>(Vec2f(400.0f, 600.f));
+	emit = &m_EntityMgr->AddObject<Emitter>(Vec2f(400.0f, 658.f));
 	emit->SetSpawnInterval(0.06f);
 	emit->SetRandomVelocityConstrants(Vec2f(-100.0f, 100.0f), Vec2f(-200.0f, -100.0f));
 	Animation::Sequence seq;
@@ -51,8 +51,8 @@ Game::Game(Direct3DWindow & wnd)
 	
 	for (int c = 0; c < 100; c++)
 	{
-		Particle* p = &emit->AddPartical<Particle>(Vec2f(400.0f, 600.f), Vec2f(0.0f, 0.0f), Vec2f(32.0f, 32.0f),
-			seq, 6.20f, true, true);
+		Particle* p = &emit->AddPartical<Particle>( Vec2f(32.0f, 32.0f),
+			seq, 2.20f, true, true);
 		p->SetGravity(gGravity* 0.25f);
 		p->SetDoScale(true);
 	}
@@ -89,7 +89,7 @@ HRESULT Game::ConstructScene(const float& deltaTime)
 	
 	
 	// update physics
-	if ((m_pPlayer->Center() - emit->GetPosition()).Len() < 100.0f)
+	if ((m_pPlayer->Center() - emit->GetPosition()).Len() < 400.0f)
 		emit->Start();
 	else
 		emit->Stop();
@@ -232,7 +232,10 @@ void Game::HandleMap()
 	
 	for (int i : Iterate(0, (int)back_vec.size()))
 	{
-		back_vec[i]->AddGroup(groupRender);
+		if (back_vec[i]->Get<Transform>().Boundary().Overlaps(m_cam.GetViewFrame()))
+		{
+			back_vec[i]->AddGroup(groupRender);
+		}
 	}
 	m_EntityMgr->ForAllOfType<MapTile>([this](auto& obj)
 	{
@@ -254,7 +257,10 @@ void Game::HandleMap()
 	
 	for (int i : Iterate(0, (int)front_vec.size()))
 	{
-		front_vec[i]->AddGroup(groupRender);
+		if (front_vec[i]->Get<Transform>().Boundary().Overlaps(m_cam.GetViewFrame()))
+		{
+			front_vec[i]->AddGroup(groupRender);
+		}
 	}
 }
 
