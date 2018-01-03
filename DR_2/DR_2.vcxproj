@@ -162,6 +162,7 @@
     <ClInclude Include="DXErr.h" />
     <ClInclude Include="ECS_Manager.h" />
     <ClInclude Include="Emitter.h" />
+    <ClInclude Include="Fountain.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Graphics.h" />
     <ClInclude Include="Array.h" />
@@ -204,6 +205,7 @@
     <ClCompile Include="DXErr.cpp" />
     <ClCompile Include="ECS_Manager.cpp" />
     <ClCompile Include="Emitter.cpp" />
+    <ClCompile Include="Fountain.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Graphics.cpp" />
     <ClCompile Include="Input.cpp" />

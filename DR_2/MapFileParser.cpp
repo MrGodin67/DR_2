@@ -76,11 +76,10 @@ void MapFileParser::Parse()
 
 void MapFileParser::Load(const std::string & filename)
 {
-	ZeroMemory(&data1, sizeof(LayerData));
+	
 	lines.clear();
 	numbLayers = 0;
-	//data1.cellHeight = data1.cellWidth = data1.height = data1.width = 0;
-	//data1.layers.resize(0);
+	
 	std::fstream file(filename);
 
 	if (file.good())

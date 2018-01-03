@@ -183,6 +183,9 @@
     <ClInclude Include="BallParticle.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Fountain.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -271,6 +274,9 @@
     </ClCompile>
     <ClCompile Include="BallParticle.cpp">
       <Filter>Objects\Particles</Filter>
+    </ClCompile>
+    <ClCompile Include="Fountain.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
