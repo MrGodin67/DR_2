@@ -64,7 +64,7 @@ Game::Game(Direct3DWindow & wnd)
 		p->SetBounceYVelocity(-200.0f);
 	}
 	emit2 = &m_EntityMgr->AddObject<Emitter>(Vec2f(400.0f, 540.f));
-	emit2->SetSpawnInterval(0.06f);
+	emit2->SetSpawnInterval(0.09f);
 	emit2->SetRandomVelocityConstrants(Vec2f(-100.0f, 100.0f), Vec2f(-200.0f, -100.0f));
 	Animation::Sequence seq2;
 	seq2.current_index = 0llu;
@@ -73,13 +73,13 @@ Game::Game(Direct3DWindow & wnd)
 	seq2.srcRects.push_back(RectF(0.0f, 0.0f, 256.0f, 256.0f));
 	seq2.timer = 0.0f;
 	
-	for (int c = 0; c < 40; c++)
+	for (int c = 0; c < 60; c++)
 	{
 		int result = randG.Get<int>(0, 10);
 
 		
 		Particle* p = &emit2->AddPartical<Particle>(Vec2f(32.0f, 32.0f),
-			seq2, 4.20f, true, true);
+			seq2, 6.20f, true, true);
 		p->SetGravity(gGravity* 0.25f);
 		p->SetDoScale(true);
 		
@@ -208,7 +208,7 @@ void Game::InitializePLayer()
 	assert(m_moveImage2->GetBitmap());
 
 
-	Vec2f size = { 48.0f,58.0f };
+	Vec2f size = { 42.0f,48.0f };
 	Vec2f position = { 100.0f,100.0f };
 	m_pPlayer = (Player*)&m_EntityMgr->AddObject<Player>(position,size);
 	m_pPlayer->Get<Transform>().acceleration = 20.20f;
