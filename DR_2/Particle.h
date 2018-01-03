@@ -29,7 +29,7 @@ public:
 		scale = 1.2f;
 		scale *= scale;
 		speed = randG.Get<float>(10.0f, 20.0f);
-		speed = speed;
+	
 	};
 };
 
