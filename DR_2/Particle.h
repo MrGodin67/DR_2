@@ -46,7 +46,7 @@ protected:
 	float Zscaler = 1.0f;
 	float ZScaler2 = 1.0f;
 	float gravity = 0.0f;
-	std::vector<Vortex> vortices;
+
 public:
 	Particle() = default;
 	Particle( const Vec2f& size,
@@ -61,10 +61,7 @@ public:
 	void Update(const float& dt)override;
 	void Draw()override;
 	void Init()override;
-	void AddVortex(const Vec2f& pos)
-	{
-		vortices.emplace_back(pos);
-	}
+	
 	
 };
 

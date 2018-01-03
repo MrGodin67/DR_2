@@ -270,7 +270,7 @@
       <Filter>Objects\Particles</Filter>
     </ClCompile>
     <ClCompile Include="BallParticle.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Objects\Particles</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
