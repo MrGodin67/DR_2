@@ -37,6 +37,7 @@ Game::Game(Direct3DWindow & wnd)
 	background2 = &m_EntityMgr->AddObject<BackGroundLayer>(Vec2f(0.0f, 500.0f - 128.0f ), 0.0f, L"assets\\back2.png");
 	m_particle = std::make_unique<D2D1Texture>(Locator::D2DRenderTarget(), L"assets\\particle.png");
 	m_particle2 = std::make_unique<D2D1Texture>(Locator::D2DRenderTarget(), L"assets\\particle2.png");
+	m_particle3 = std::make_unique<D2D1Texture>(Locator::D2DRenderTarget(), L"assets\\particle3.png");
 	
 	
 	
@@ -62,7 +63,28 @@ Game::Game(Direct3DWindow & wnd)
 		p->SetNumberOfBounces(4);
 		p->SetBounceYVelocity(-200.0f);
 	}
+	emit2 = &m_EntityMgr->AddObject<Emitter>(Vec2f(400.0f, 540.f));
+	emit2->SetSpawnInterval(0.06f);
+	emit2->SetRandomVelocityConstrants(Vec2f(-100.0f, 100.0f), Vec2f(-200.0f, -100.0f));
+	Animation::Sequence seq2;
+	seq2.current_index = 0llu;
+	seq2.frameDelay = 0.0f;
+	seq2.image = m_particle3->GetBitmap();
+	seq2.srcRects.push_back(RectF(0.0f, 0.0f, 256.0f, 256.0f));
+	seq2.timer = 0.0f;
 	
+	for (int c = 0; c < 40; c++)
+	{
+		int result = randG.Get<int>(0, 10);
+
+		
+		Particle* p = &emit2->AddPartical<Particle>(Vec2f(32.0f, 32.0f),
+			seq2, 4.20f, true, true);
+		p->SetGravity(gGravity* 0.25f);
+		p->SetDoScale(true);
+		
+	}
+	emit2->Start();
 }
 
 Game::~Game()
@@ -103,6 +125,7 @@ HRESULT Game::ConstructScene(const float& deltaTime)
 	m_EntityMgr->Update(deltaTime);
 	
 	emit->DoTranslation(-m_cam.GetPosition());
+	emit2->DoTranslation(-m_cam.GetPosition());
 	// handle physics results
 
 	HandleMap();

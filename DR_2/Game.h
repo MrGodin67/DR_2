@@ -34,7 +34,7 @@ class Game
 	std::unique_ptr<D2D1Texture> m_moveImage2;
 	std::unique_ptr<D2D1Texture> m_particle;
 	std::unique_ptr<D2D1Texture> m_particle2;
-
+	std::unique_ptr<D2D1Texture> m_particle3;
 	std::vector<Collider*> m_colliders;
 	Arena* m_currentArena = nullptr;
 	D2D1Texture * backGround;
@@ -46,6 +46,7 @@ class Game
 	BackGroundLayer* background2;
 
 	Emitter* emit;
+	Emitter* emit2;
 public:
 	Game(class Direct3DWindow& wnd);
 	~Game();

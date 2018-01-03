@@ -68,7 +68,7 @@ void Particle::Update(const float & dt)
 
 			if (diffuse)
 			{
-				if(life < (lifeSpan * 0.5f))
+				
 				   Get<Animation>().SetTransparency(life / lifeSpan);
 			}
 			

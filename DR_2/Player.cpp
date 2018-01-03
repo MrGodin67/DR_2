@@ -40,6 +40,11 @@ void Player::DoWalk()
 		else
 			Get<Animation>().StartSequenceByName("right_walk");
 	}
+	else
+	{
+		horizDirection == -1.0f ? Get<Animation>().StartSequenceByName("left_jump") :
+			Get<Animation>().StartSequenceByName("right_jump");
+	}
 	stateFlags[psIdle] = false;
 	stateFlags[psWalking] = true;
 }
