@@ -6,7 +6,7 @@
 #include "Animation.h"
 #include "Collider.h"
 #include "Animation.h"
-#include "Particle.h"
+#include "BallParticle.h"
 static const vstring mapFilenames = 
 {
 	{"map1.txt"},
@@ -36,10 +36,11 @@ Game::Game(Direct3DWindow & wnd)
 	background1 = &m_EntityMgr->AddObject<BackGroundLayer>(Vec2f(0.0f, 0.0f), 0.0f, L"assets\\back1.png");
 	background2 = &m_EntityMgr->AddObject<BackGroundLayer>(Vec2f(0.0f, 500.0f - 128.0f ), 0.0f, L"assets\\back2.png");
 	m_particle = std::make_unique<D2D1Texture>(Locator::D2DRenderTarget(), L"assets\\particle.png");
+	m_particle2 = std::make_unique<D2D1Texture>(Locator::D2DRenderTarget(), L"assets\\particle2.png");
 	
 	
 	
-	emit = &m_EntityMgr->AddObject<Emitter>(Vec2f(400.0f, 658.f));
+	emit = &m_EntityMgr->AddObject<Emitter>(Vec2f(400.0f, 840.f));
 	emit->SetSpawnInterval(0.06f);
 	emit->SetRandomVelocityConstrants(Vec2f(-100.0f, 100.0f), Vec2f(-200.0f, -100.0f));
 	Animation::Sequence seq;
@@ -48,14 +49,20 @@ Game::Game(Direct3DWindow & wnd)
 	seq.image = m_particle->GetBitmap();
 	seq.srcRects.push_back(RectF(0.0f, 0.0f, 256.0f, 256.0f));
 	seq.timer = 0.0f;
-	
-	for (int c = 0; c < 100; c++)
+	RandG randG;
+	for (int c = 0; c < 5; c++)
 	{
-		Particle* p = &emit->AddPartical<Particle>( Vec2f(32.0f, 32.0f),
-			seq, 2.20f, true, true);
+		int result = randG.Get<int>(0, 10);
+		
+			seq.image = m_particle2->GetBitmap();
+		BallParticle* p = &emit->AddPartical<BallParticle>( Vec2f(32.0f, 32.0f),
+			seq, 12.20f, false, true);
 		p->SetGravity(gGravity* 0.25f);
-		p->SetDoScale(true);
+		p->SetDoScale(false);
+		p->SetNumberOfBounces(4);
+		p->SetBounceYVelocity(-200.0f);
 	}
+	
 }
 
 Game::~Game()
@@ -84,7 +91,7 @@ HRESULT Game::ConstructScene(const float& deltaTime)
 	m_cam.SetFocusPoint(m_pPlayer->Get<Transform>().Center());
 	m_cam.Update(deltaTime);
 	
-	m_pPlayer->Get<Transform>().Translate(-m_cam.GetPosition());
+	m_pPlayer->DoTranslation(-m_cam.GetPosition());
 	background2->Translate(Vec2f(-m_cam.GetPosition().x*0.15f, 0.0f));
 	
 	
@@ -94,10 +101,10 @@ HRESULT Game::ConstructScene(const float& deltaTime)
 	else
 		emit->Stop();
 	m_EntityMgr->Update(deltaTime);
-	emit->Update(deltaTime);
-	emit->DoTransform(-m_cam.GetPosition());
+	
+	emit->DoTranslation(-m_cam.GetPosition());
 	// handle physics results
-	//m_EntityMgr->Refresh();
+
 	HandleMap();
 	DoCollisions();
 	//HandleUnits();
@@ -122,7 +129,7 @@ HRESULT Game::RenderScene()
 	//DrawBackground();
 	m_EntityMgr->Draw();
 	 m_pPlayer->Draw();
-	 emit->Draw();
+	// emit->Draw();
 	m_vpMain.EndScene();
 
 	m_vpUI.BeginScene();
@@ -178,11 +185,12 @@ void Game::InitializePLayer()
 	assert(m_moveImage2->GetBitmap());
 
 
-	Vec2f size = { 32.0f,42.0f };
+	Vec2f size = { 48.0f,58.0f };
 	Vec2f position = { 100.0f,100.0f };
 	m_pPlayer = (Player*)&m_EntityMgr->AddObject<Player>(position,size);
 	m_pPlayer->Get<Transform>().acceleration = 20.20f;
 	m_pPlayer->Get<Transform>().friction = 0.920f;
+	size.height -= 5.0f;
 	m_pPlayer->Add<Collider>(position + (size * 0.5f), size*0.5f);
 	m_pPlayer->Add<Input>(window.kbd, window.mouse);
 	m_pPlayer->AddGroup(groupMap);
@@ -191,7 +199,7 @@ void Game::InitializePLayer()
 	Animation* an = &m_pPlayer->Get<Animation>();
 	Animation::Sequence seq;
 	seq.current_index = 0;
-	seq.frameDelay = 0.080f;
+	seq.frameDelay = 0.10f;
 	seq.image = m_moveImage->GetBitmap();
 	seq.srcRects.push_back(RectF(0.0f, 0.0f, 64.0f, 64.0f));
 	an->AddSequence("right_idle", seq);
@@ -236,23 +244,36 @@ void Game::HandleMap()
 		{
 			back_vec[i]->AddGroup(groupRender);
 		}
+		else
+		{
+			back_vec[i]->RemoveGroup(groupRender);
+		}
 	}
 	m_EntityMgr->ForAllOfType<MapTile>([this](auto& obj)
 	{
 
-		if (obj.Get<Transform>().Boundary().Overlaps(m_cam.GetViewFrame()))
+		if (!obj.Passable())
 		{
+			if (obj.Get<Transform>().Boundary().Overlaps(m_cam.GetViewFrame()))
+			{
 
-			obj.AddGroup(groupRender);
-			obj.Get<Transform>().Translate(-m_cam.GetPosition());
-			m_colliders.push_back(&obj.Get<Collider>());
+				obj.AddGroup(groupRender);
+				obj.Get<Transform>().Translate(-m_cam.GetPosition());
+				//m_colliders.push_back(&obj.Get<Collider>());
+			}
+			else
+			{
+				obj.RemoveGroup(groupRender);
+			}
+			
 		}
-		else
-		{
-			obj.RemoveGroup(groupRender);
-		}
-
 	});
+
+	m_EntityMgr->ForAllOfType<BallParticle>([this](auto& ball)
+	{
+		ball.ResolveCollision(0);
+	});
+	m_pPlayer->AddGroup(groupRender);
 	auto& front_vec = m_EntityMgr->GetGroupAction(groupLayerFront);
 	
 	for (int i : Iterate(0, (int)front_vec.size()))
@@ -260,6 +281,10 @@ void Game::HandleMap()
 		if (front_vec[i]->Get<Transform>().Boundary().Overlaps(m_cam.GetViewFrame()))
 		{
 			front_vec[i]->AddGroup(groupRender);
+		}
+		else
+		{
+			front_vec[i]->RemoveGroup(groupRender);
 		}
 	}
 }
@@ -293,9 +318,7 @@ void Game::HandleInput()
 
 void Game::DoCollisions()
 {
-
-	for (auto& it : m_colliders)
-		m_pPlayer->ResolveCollision(it);
+		m_pPlayer->ResolveCollisions();
 }
 	
 

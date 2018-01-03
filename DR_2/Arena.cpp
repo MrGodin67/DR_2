@@ -46,6 +46,11 @@ void Arena::Create(std::unique_ptr<ECS_Manager>& manager)
 					manager->AddObject<MapTile>(position, RectF(srcRect),passable);
 					
 				}
+				else
+				{
+					// dummy tile
+					manager->AddObject<MapTile>(position, RectF(), true);
+				}
 				position.x += (float)data.drawWidth;
 			}
 			position.y += (float)data.drawHeight;

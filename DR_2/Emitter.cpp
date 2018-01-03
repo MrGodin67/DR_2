@@ -4,7 +4,7 @@
 
 
 
-;
+
 
 void Emitter::Spawn()
 {
@@ -16,19 +16,19 @@ void Emitter::Spawn()
 			Vec2f resultVelocity;
 			if (!m_randomVelocityDescribed && m_doRandomSpawn)
 			{
-				it->Reset(Get<Transform>().Center(),GetRandomVector(),
+				it->Reset(Get<Transform>().position,GetRandomVector(),
 					randG.Get<float>(-10.0f, 10.0f));
 			}
 			else if (m_doRandomSpawn)
 			{
 
-				it->Reset(Get<Transform>().Center(), Vec2f(randG.Get<float>(m_velocityRandomConstrantsX.min, m_velocityRandomConstrantsX.max),
+				it->Reset(Get<Transform>().position, Vec2f(randG.Get<float>(m_velocityRandomConstrantsX.min, m_velocityRandomConstrantsX.max),
 					randG.Get<float>(m_velocityRandomConstrantsY.min, m_velocityRandomConstrantsY.max)),
 					randG.Get<float>(-10.0f, 10.0f));
 			}
 			else
 			{
-				it->Reset(Get<Transform>().Center(),m_velocity,randG.Get<float>(-10.0f, 10.0f));
+				it->Reset(Get<Transform>().position,m_velocity,randG.Get<float>(-10.0f, 10.0f));
 			}
 			return;
 		}
@@ -66,10 +66,10 @@ Emitter::~Emitter()
 	for (auto& it : m_objects)
 		it->Destroy();
 }
-void Emitter::DoTransform(const Vec2f & offset)
+void Emitter::DoTranslation(const Vec2f & offset)
 {
 	for (auto& it : m_objects)
-		it->Get<Transform>().Translate(offset);
+		it->DoTranslation(offset);
 }
 void Emitter::Update(const float & dt)
 {
@@ -77,7 +77,7 @@ void Emitter::Update(const float & dt)
 	Refresh();
 	if (this->m_initalized)
 	{
-		m_renderObjects.clear();
+		m_activeObjects.clear();
 		if ((m_timer += dt) >= m_interval)
 		{
 			Spawn();
@@ -89,12 +89,12 @@ void Emitter::Update(const float & dt)
 			iter->Update(dt);
 			if (!iter->Done())
 			{
-				m_renderObjects.push_back(iter);
+				m_activeObjects.push_back(iter);
 			};
 		}
 	}
 	// allow objects to finish if this is stopped
-	else if (m_renderObjects.size() > 0)
+	else if (m_activeObjects.size() > 0)
 	{
 		for (auto& iter : m_objects)
 		{
@@ -163,5 +163,10 @@ void Emitter::SetVelocity(const Vec2f & value)
 void Emitter::SetWind(const Vec2f & value)
 {
 	m_wind = value;
+}
+
+void Emitter::SetPosition(const Vec2f & value)
+{
+	Get<Transform>().position = value;
 }
 

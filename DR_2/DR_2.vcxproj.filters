@@ -46,6 +46,9 @@
     <Filter Include="Objects\Emitter">
       <UniqueIdentifier>{f1cf96e8-1544-40d1-ab5a-795bf5afd0b1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Objects\Particles">
+      <UniqueIdentifier>{9e39ff03-a0f9-45ef-8971-cdf0fa515651}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -171,10 +174,13 @@
     <ClInclude Include="BackGroundLayer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Particle.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Emitter.h">
+      <Filter>Objects\Emitter</Filter>
+    </ClInclude>
+    <ClInclude Include="Particle.h">
+      <Filter>Objects\Particles</Filter>
+    </ClInclude>
+    <ClInclude Include="BallParticle.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -257,11 +263,14 @@
     <ClCompile Include="BackGroundLayer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Particle.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Emitter.cpp">
-      <Filter>Header Files</Filter>
+      <Filter>Objects\Emitter</Filter>
+    </ClCompile>
+    <ClCompile Include="Particle.cpp">
+      <Filter>Objects\Particles</Filter>
+    </ClCompile>
+    <ClCompile Include="BallParticle.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

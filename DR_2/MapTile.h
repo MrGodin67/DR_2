@@ -19,6 +19,7 @@ public:
 	void Passable(const bool& val);
 	static void SetTileAttributes(const Vec2f& dims, ID2D1Bitmap* image);
 	static Vec2f GetDimensions();
+	static Vec2i MakeIndices(const Vec2f& pos);
 	Vec2i MapLocation()const;
 	void AddUnit(Unit* unit);
 	void RemoveUnit(Unit* unit);

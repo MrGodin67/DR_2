@@ -2,7 +2,8 @@
 #include "ECS_Manager.h"
 #include "MapTile.h"
 #include "Arena.h"
-
+#include "Collider.h"
+#include "TransformComponent.h"
 
 
 
@@ -15,7 +16,14 @@ void GameObject::Update(const float & dt)
 {
 	for (auto& comp : m_components)
 		comp->Update(dt);
+}
+void GameObject::DoTranslation(const Vec2f & offset)
+
+{
+	if (Has<Transform>())
+		Get<Transform>().Translate(offset);
 };
+;
 
 
 bool GameObject::Alive() const
@@ -122,6 +130,76 @@ std::vector<MapTile*> ECS_Manager::GetMapPartition(const Vec2i & location, const
 	}
 	
 	return list;
+}
+
+std::vector<Collider*> ECS_Manager::GetMapColliders(const Vec2i & location)
+{
+	std::vector<Collider*> list;
+	auto& level(groupedByType[GetID<Arena>()]);
+	Arena* arena = (Arena*)level[0];
+	int step = 1;
+	
+		list.clear();
+		for (int r = -step; r <= step; r++)
+		{
+			for (int c = -step; c <= step; c++)
+			{
+				int x = location.x + c;
+				int y = location.y + r;
+				if (x < 0)x = 0;
+				if (x >= arena->GetData().width)
+					x = arena->GetData().width-1;
+				if (y < 0)y = 0;
+				if (y >= arena->GetData().height)
+					y = arena->GetData().height-1;
+
+				if (!GetTile(Vec2i(x, y))->Passable())
+				{
+					auto& it = std::find(list.begin(), list.end(), &GetTile(Vec2i(x, y))->Get<Collider>());
+					if (it == list.end())
+					{
+						list.push_back(&GetTile(Vec2i(x, y))->Get<Collider>());
+					}
+				}
+			
+		}
+
+
+
+
+	}
+
+	return list;
+}
+
+std::vector<Collider*> ECS_Manager::GetMapColliders(const Vec2i & startIndicies, const Vec2i & endIndices)
+{
+	std::vector<Collider*> list;
+	auto& level(groupedByType[GetID<MapTile>()]);
+	for (int r = startIndicies.y; r <= endIndices.y; r++)
+	{
+		for (int c = startIndicies.x; c <= endIndices.x; c++)
+		{
+			//const int index = r * (int)MapTile::GetDimensions().width + c;
+			//assert(index >= 0); assert(index < level.size());
+			MapTile* tile = GetTile({ r,c });
+			assert(tile);
+			if (!tile->Passable())
+				list.push_back(&tile->Get<Collider>());
+		}
+	}
+	
+	return std::vector<class Collider*>();
+}
+
+std::vector<class Collider*> ECS_Manager::GetVerticalMapColliders(const Vec2i & location, const int & dir)
+{
+	return std::vector<class Collider*>();
+}
+
+std::vector<class Collider*> ECS_Manager::GetHorizontalMapColliders(const Vec2i & location, const int & dir)
+{
+	return std::vector<class Collider*>();
 }
 
 

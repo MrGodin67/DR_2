@@ -33,6 +33,7 @@ class Game
 	std::unique_ptr<D2D1Texture> m_moveImage;
 	std::unique_ptr<D2D1Texture> m_moveImage2;
 	std::unique_ptr<D2D1Texture> m_particle;
+	std::unique_ptr<D2D1Texture> m_particle2;
 
 	std::vector<Collider*> m_colliders;
 	Arena* m_currentArena = nullptr;

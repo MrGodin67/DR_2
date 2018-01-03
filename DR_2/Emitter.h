@@ -10,7 +10,7 @@ class Emitter : public GameObject
 {
 private:
 	std::vector<Particle*> m_objects;
-	std::vector<Particle*> m_renderObjects;
+	std::vector<Particle*> m_activeObjects;
 
 	// user defined
 	
@@ -60,12 +60,12 @@ public:
 	ParticleType& AddPartical(TArgs&&... inArgs)
 	{
 		m_objects.push_back( &manager->AddObject<ParticleType>(std::forward<TArgs>(inArgs)...));
-		return *m_objects.back();
+		return *(ParticleType*)m_objects.back();
 	};
 	
 	
 	// virtual functions
-	void DoTransform(const Vec2f& offset);
+	void DoTranslation(const Vec2f& offset)override;
 	void Update(const float& dt)override;
 	
 	void Draw()override;
@@ -85,6 +85,7 @@ public:
 	void SetRandomVelocityConstrants(const Vec2f& X, const Vec2f& Y);
 	void SetVelocity(const Vec2f& value);
 	void SetWind(const Vec2f& value);
+	void SetPosition(const Vec2f& value);
 	
 };
 

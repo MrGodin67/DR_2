@@ -62,7 +62,7 @@ public:
 	// Virtual functions
 	virtual void Draw();
 	virtual void Update(const float& dt);
-
+	virtual void DoTranslation(const Vec2f& offset);
 	//	
 	bool Alive()const;
 	void Destroy();
@@ -183,7 +183,10 @@ public:
 
 	class MapTile* GetTile(const Vec2i& location);
 	std::vector<MapTile*> GetMapPartition(const Vec2i& location, const int& objectCount);
-	
+	std::vector<class Collider*> GetMapColliders(const Vec2i& location);
+	std::vector<class Collider*> GetMapColliders(const Vec2i& startIndicies, const Vec2i& endIndices);
+	std::vector<class Collider*> GetVerticalMapColliders(const Vec2i& location, const int& dir);
+	std::vector<class Collider*> GetHorizontalMapColliders(const Vec2i& location, const int& dir);
 	template <typename T, typename... TArgs>
 	T& AddObject(TArgs&&... mArgs)
 	{

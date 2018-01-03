@@ -42,8 +42,11 @@ MapTile::~MapTile()
 
 void MapTile::Draw()
 {
-	Locator::Gfx()->DrawSprite(Get<Transform>().Matrix(),
-		Get<Transform>().Boundary().ToD2D(), tileSet, &srcRect.ToD2D());
+	if (!passable)
+	{
+		Locator::Gfx()->DrawSprite(Get<Transform>().Matrix(),
+			Get<Transform>().Boundary().ToD2D(), tileSet, &srcRect.ToD2D());
+	}
 }
 
 void MapTile::SetTileAttributes(const Vec2f& dims, ID2D1Bitmap* image)
@@ -55,6 +58,11 @@ void MapTile::SetTileAttributes(const Vec2f& dims, ID2D1Bitmap* image)
 Vec2f MapTile::GetDimensions()
 {
 	return dimensions;
+}
+
+Vec2i MapTile::MakeIndices(const Vec2f & pos)
+{
+	return Vec2i((int)(pos.x / dimensions.x), (int)(pos.y / dimensions.y));
 }
 
 Vec2i MapTile::MapLocation() const

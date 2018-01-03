@@ -148,6 +148,7 @@
     <ClInclude Include="Animation.h" />
     <ClInclude Include="Arena.h" />
     <ClInclude Include="BackGroundLayer.h" />
+    <ClInclude Include="BallParticle.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="ChiliException.h" />
     <ClInclude Include="ChiliWin.h" />
@@ -192,6 +193,7 @@
     <ClCompile Include="Animation.cpp" />
     <ClCompile Include="Arena.cpp" />
     <ClCompile Include="BackGroundLayer.cpp" />
+    <ClCompile Include="BallParticle.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Collider.cpp" />
     <ClCompile Include="D2D1Texture.cpp" />
