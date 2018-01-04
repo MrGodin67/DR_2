@@ -175,13 +175,12 @@ std::vector<Collider*> ECS_Manager::GetMapColliders(const Vec2i & location)
 std::vector<Collider*> ECS_Manager::GetMapColliders(const Vec2i & startIndicies, const Vec2i & endIndices)
 {
 	std::vector<Collider*> list;
-	auto& level(groupedByType[GetID<MapTile>()]);
+
 	for (int r = startIndicies.y; r <= endIndices.y; r++)
 	{
 		for (int c = startIndicies.x; c <= endIndices.x; c++)
 		{
-			//const int index = r * (int)MapTile::GetDimensions().width + c;
-			//assert(index >= 0); assert(index < level.size());
+			
 			MapTile* tile = GetTile({ r,c });
 			assert(tile);
 			if (!tile->Passable())
@@ -189,7 +188,7 @@ std::vector<Collider*> ECS_Manager::GetMapColliders(const Vec2i & startIndicies,
 		}
 	}
 	
-	return std::vector<class Collider*>();
+	return list;
 }
 
 std::vector<class Collider*> ECS_Manager::GetVerticalMapColliders(const Vec2i & location, const int & dir)

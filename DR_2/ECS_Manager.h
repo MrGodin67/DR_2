@@ -122,9 +122,6 @@ public:
 	Vec2f Center()const;
 };
 
-
-
-
 using GameObjectGroup = std::array<std::vector<GameObject*>, maxGroups>;
 
 enum GroupLabels : std::size_t
@@ -142,12 +139,9 @@ enum GroupLabels : std::size_t
 	groupNone
 };
 
-
-
-
 class ECS_Manager
 {
-	friend class GameObject;
+	
 	std::vector<std::unique_ptr<GameObject>> objects;
 	std::map<std::size_t, std::vector<GameObject*>> groupedByType;
 	GameObjectGroup groupedByAction;

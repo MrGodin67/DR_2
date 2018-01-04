@@ -35,9 +35,7 @@ void Player::DoWalk()
 	if (!stateFlags[psJumping])
 	{
 
-		if (horizDirection == -1.0f)
-			Get<Animation>().StartSequenceByName("left_walk");
-		else
+		(horizDirection == -1.0f) ? Get<Animation>().StartSequenceByName("left_walk") : 
 			Get<Animation>().StartSequenceByName("right_walk");
 	}
 	else
@@ -69,13 +67,10 @@ Player::~Player()
 
 void Player::Update(const float & dt)
 {
-	CapVelocity();
+	
 	
 	Get<Input>().Update(dt);
 	// do velocity mutations before final update
-
-
-	
 	if (stateFlags[psWalking])
 	    Get<Transform>().velocity.x += (horizDirection * Get<Transform>().acceleration);
 
@@ -85,20 +80,15 @@ void Player::Update(const float & dt)
 		if (fabsf(Get<Transform>().velocity.x) < 0.5f)
 			Get<Transform>().velocity.x = 0.0f;
 	}
-	
-
 	Get<Transform>().velocity.y += gGravity;
+	CapVelocity();
 	Get<Transform>().Update(dt);
-
 	Get<Collider>().Update(dt);
-	// update animation with new positions
 	Get<Animation>().Update(dt);
-	if (Get<Transform>().velocity.y >= 0.0f)
-		jetPack->Stop();
+	if (Get<Transform>().velocity.y >= 0.0f)jetPack->Stop();
 	jetPack->SetPosition(Vec2f(Get<Transform>().Center().x - 10.0f, Get<Transform>().Center().y - 10.0f));
 	jetPack->Update(dt);
 }
-
 void Player::Draw()
 {
 	for (auto& it : m_components)
@@ -107,10 +97,9 @@ void Player::Draw()
 void Player::Init()
 {
 	
-	
 	jetPack = &manager->AddObject<Emitter>(Get<Transform>().Center());
 	jetPack->SetSpawnInterval(0.06f);
-	jetPack->SetRandomVelocityConstrants(Vec2f(-25.0f, 25.0f), Vec2f(15.0f, 20.0f));
+	jetPack->SetRandomVelocityConstrants(Vec2f(-2.0f, 2.0f), Vec2f(1.0f, 8.0f));
 	
 	Animation::Sequence seq;
 	seq.current_index = 0llu;
@@ -119,7 +108,7 @@ void Player::Init()
 	seq.srcRects.push_back(RectF(0.0f, 0.0f, 256.0f, 256.0f));
 	seq.timer = 0.0f;
 	RandG randG;
-	for (int c = 0; c < 18; c++)
+	for (int c = 0; c < 8; c++)
 	{
 		int result = randG.Get<int>(0, 10);
 
