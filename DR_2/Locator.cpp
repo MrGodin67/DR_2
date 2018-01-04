@@ -6,6 +6,7 @@ SoundManager* Locator::soundEngine = nullptr;
 TextHandler* Locator::textManager = nullptr;
 ID2D1SolidColorBrush* Locator::solidBrush = nullptr;
 Graphics* Locator::gfx = nullptr;
+TextureManager* Locator::textures = nullptr;
 
 void Locator::SetGraphics(Graphics * g)
 {
@@ -31,6 +32,11 @@ void Locator::SetTextManager(TextHandler * tx)
 	textManager = tx;
 }
 
+void Locator::SetImageManager(TextureManager * t)
+{
+	textures = t;
+}
+
 
 
 ID2D1RenderTarget * Locator::D2DRenderTarget()
@@ -51,6 +57,16 @@ SoundManager * Locator::Audio()
 Graphics * Locator::Gfx()
 {
 	return gfx;
+}
+
+TextHandler * Locator::Text()
+{
+	return textManager;
+}
+
+TextureManager * Locator::Images()
+{
+	return textures;
 }
 
 

@@ -6,8 +6,7 @@
 class Fountain :
 	public GameObject
 {
-	std::unique_ptr<D2D1Texture> image;
-	std::unique_ptr<D2D1Texture> m_particle3;
+	
 	Emitter* emitter;
 	float distanceToActivate;
 public:

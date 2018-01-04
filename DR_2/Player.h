@@ -16,7 +16,7 @@ enum PlayerStates : std::size_t
 class Player :
 	public GameObject
 {
-	std::unique_ptr<D2D1Texture> jetPackParticle;
+	
 	std::bitset<ieNumberOf> inputFlags;
 	std::bitset<psNumberOf> stateFlags;
 	Vec2f maxVelocity = {100.0f,500.0f};

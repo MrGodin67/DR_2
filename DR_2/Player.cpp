@@ -106,8 +106,7 @@ void Player::Draw()
 }
 void Player::Init()
 {
-	jetPackParticle = std::make_unique<D2D1Texture>(Locator::D2DRenderTarget(), L"assets\\particle3.png");
-	assert(jetPackParticle->GetBitmap());
+	
 	
 	jetPack = &manager->AddObject<Emitter>(Get<Transform>().Center());
 	jetPack->SetSpawnInterval(0.06f);
@@ -116,7 +115,7 @@ void Player::Init()
 	Animation::Sequence seq;
 	seq.current_index = 0llu;
 	seq.frameDelay = 0.0f;
-	seq.image = jetPackParticle->GetBitmap();
+	seq.image = Locator::Images()->GetImage("particle_fire");
 	seq.srcRects.push_back(RectF(0.0f, 0.0f, 256.0f, 256.0f));
 	seq.timer = 0.0f;
 	RandG randG;
@@ -181,32 +180,33 @@ void Player::ResolveCollisions()
 			return (Get<Transform>().Center() - a->AABB().Center()).LenSq() <
 				(Get<Transform>().Center() - b->AABB().Center()).LenSq();
 		});
-	}
-	
-	for (auto& col : colliders)
-	{
-		Collision collision = Get<Collider>().AABBCollision(col->AABB());
-		if (collision.intersecting)
+
+
+		for (auto& col : colliders)
 		{
-
-			Get<Collider>().StaticCollisionCorrection(col->AABB(), collision);
-			switch (collision.side)
+			Collision collision = Get<Collider>().AABBCollision(col->AABB());
+			if (collision.intersecting)
 			{
-			case COLLISION_LEFT:
-			case COLLISION_RIGHT:
-				//Get<Transform>().velocity.x = 0.0f;
-				break;
-			case COLLISION_BOTTOM:
-				stateFlags[psJumping] = false;
-				Get<Transform>().velocity.y = 0.0f;
-				jetPack->Stop();
-				break;
-			case COLLISION_TOP:
-				Get<Transform>().velocity.y = 0.0f;
-				jetPack->Stop();
-				break;
-			};
 
+				Get<Collider>().StaticCollisionCorrection(col->AABB(), collision);
+				switch (collision.side)
+				{
+				case COLLISION_LEFT:
+				case COLLISION_RIGHT:
+					Get<Transform>().velocity.x = -Get<Transform>().velocity.x;
+					break;
+				case COLLISION_BOTTOM:
+					stateFlags[psJumping] = false;
+					Get<Transform>().velocity.y = 0.0f;
+					jetPack->Stop();
+					break;
+				case COLLISION_TOP:
+					Get<Transform>().velocity.y = 0.0f;
+					jetPack->Stop();
+					break;
+				};
+
+			}
 		}
 	}
 	

@@ -165,9 +165,6 @@
     <ClInclude Include="Player.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Animation.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Input.h">
       <Filter>ICS\Components</Filter>
     </ClInclude>
@@ -183,7 +180,13 @@
     <ClInclude Include="BallParticle.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Animation.h">
+      <Filter>ICS\Components</Filter>
+    </ClInclude>
     <ClInclude Include="Fountain.h">
+      <Filter>Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -257,9 +260,6 @@
     <ClCompile Include="Player.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Animation.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Input.cpp">
       <Filter>ICS\Components</Filter>
     </ClCompile>
@@ -275,7 +275,13 @@
     <ClCompile Include="BallParticle.cpp">
       <Filter>Objects\Particles</Filter>
     </ClCompile>
+    <ClCompile Include="Animation.cpp">
+      <Filter>ICS\Components</Filter>
+    </ClCompile>
     <ClCompile Include="Fountain.cpp">
+      <Filter>Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="TextureManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

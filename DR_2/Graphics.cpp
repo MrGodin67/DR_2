@@ -154,5 +154,6 @@ HRESULT Graphics::CreateTextObjects()
 	if (!result) { return E_FAIL; }
 	result = m_TextFactory.InitializeFont("Tahoma10", { L"Tahoma", 10.0f });
 	if (!result) { return E_FAIL; }
+	
 	return S_OK;
 }

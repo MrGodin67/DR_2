@@ -23,7 +23,7 @@ Game::Game(Direct3DWindow & wnd)
 	m_cam(m_vpMain.Width(), m_vpMain.Height())
 {
 	Locator::SetGraphics(&gfx);
-	
+	LoadImages();
 	
 		
 	m_EntityMgr = std::make_unique<ECS_Manager>();
@@ -35,8 +35,7 @@ Game::Game(Direct3DWindow & wnd)
 	InitializePLayer();
 	background1 = &m_EntityMgr->AddObject<BackGroundLayer>(Vec2f(0.0f, 0.0f), 0.0f, L"assets\\back1.png");
 	background2 = &m_EntityMgr->AddObject<BackGroundLayer>(Vec2f(0.0f, 500.0f - 128.0f ), 0.0f, L"assets\\back2.png");
-	m_particle = std::make_unique<D2D1Texture>(Locator::D2DRenderTarget(), L"assets\\particle.png");
-	m_particle2 = std::make_unique<D2D1Texture>(Locator::D2DRenderTarget(), L"assets\\particle2.png");
+	
 	
 	
 	
@@ -47,15 +46,13 @@ Game::Game(Direct3DWindow & wnd)
 	Animation::Sequence seq;
 	seq.current_index = 0llu;
 	seq.frameDelay = 0.0f;
-	seq.image = m_particle->GetBitmap();
+	seq.image = Locator::Images()->GetImage("particle_star");
 	seq.srcRects.push_back(RectF(0.0f, 0.0f, 256.0f, 256.0f));
 	seq.timer = 0.0f;
 	RandG randG;
 	for (int c = 0; c < 25; c++)
 	{
 		int result = randG.Get<int>(0, 10);
-		
-			seq.image = m_particle2->GetBitmap();
 		BallParticle* p = &emit->AddPartical<BallParticle>( Vec2f(32.0f, 32.0f),
 			seq, 12.20f, false, true);
 		p->SetGravity(gGravity* 0.25f);
@@ -64,14 +61,16 @@ Game::Game(Direct3DWindow & wnd)
 		p->SetBounceYVelocity(-200.0f);
 	}
 	
-	fountain1 = &m_EntityMgr->AddObject<Fountain>(Vec2f(400.0f, 548.f), Vec2f(32.0f, 32.0f),100.0f);
+	fountains.push_back(&m_EntityMgr->AddObject<Fountain>(Vec2f(400.0f, 548.f), Vec2f(32.0f, 32.0f),100.0f));
+	fountains.push_back(&m_EntityMgr->AddObject<Fountain>(Vec2f(1127.0f, 1057.f), Vec2f(32.0f, 32.0f), 100.0f));
+	fountains.push_back(&m_EntityMgr->AddObject<Fountain>(Vec2f(2515.0f, 737.f), Vec2f(32.0f, 32.0f), 100.0f));
+	fountains.push_back(&m_EntityMgr->AddObject<Fountain>(Vec2f(500.0f, 548.f), Vec2f(32.0f, 32.0f), 100.0f));
 }
 
 Game::~Game()
 {
-	SafeDelete(&backGround);
-	SafeDelete(&sidePanel);
-	SafeDelete(&bases);
+	
+	
 }
 
 bool Game::Play(const float& deltaTime)
@@ -94,11 +93,15 @@ HRESULT Game::ConstructScene(const float& deltaTime)
 	m_cam.Update(deltaTime);
 	
 	m_pPlayer->DoTranslation(-m_cam.GetPosition());
-	fountain1->DoTranslation(-m_cam.GetPosition());
+	
 	emit->DoTranslation(-m_cam.GetPosition());
 	background2->Translate(Vec2f(-m_cam.GetPosition().x*0.15f, 0.0f));
-	fountain1->DoEnableByDistanceTo(m_pPlayer->Center());
 	
+	for (auto& it : fountains)
+	{
+		it->DoTranslation(-m_cam.GetPosition());
+		it->DoEnableByDistanceTo(m_pPlayer->Center());
+	}
 	// update physics
 	if ((m_pPlayer->Center() - emit->GetPosition()).Len() < 400.0f)
 		emit->Start();
@@ -138,7 +141,13 @@ HRESULT Game::RenderScene()
 	m_vpMain.EndScene();
 
 	m_vpUI.BeginScene();
+	
 	// TODO render UI controls here
+	std::wstring str;
+	str = std::to_wstring(m_pPlayer->Center().x) + L" " + std::to_wstring(m_pPlayer->Center().y);
+	gfx.RenderText((LPWSTR)str.c_str(), Locator::Text()->GetFormat("Tahoma18"), RectF(m_vpUI.GetViewTopLeft().x + 10,
+		m_vpUI.GetViewTopLeft().y + 10, m_vpUI.GetViewTopLeft().x + 200.0f, m_vpUI.GetViewTopLeft().y + 48.0f).ToD2D(),
+		D2D1::ColorF(1.0f, 1.0f, 1.0f, 1.0f));
 	m_vpUI.EndScene();
 	hr = gfx.EndScene();
 	if (FAILED(hr)) { return hr; }
@@ -163,8 +172,7 @@ void Game::LoadAudio()
 
 void Game::LoadLevel(const std::size_t& index)
 {
-	backGround = new D2D1Texture(Locator::D2DRenderTarget(), L"assets\\back1.png");
-	assert(backGround->GetBitmap());
+	
 	
 	
 	std::string fileName = mapFilenames[index];
@@ -184,12 +192,7 @@ void Game::LoadLevel(const std::size_t& index)
 
 void Game::InitializePLayer()
 {
-	m_moveImage = std::make_unique<D2D1Texture>(Locator::D2DRenderTarget(), L"assets\\robo64x64.png");
-	assert(m_moveImage->GetBitmap());
-	m_moveImage2 = std::make_unique<D2D1Texture>(Locator::D2DRenderTarget(), L"assets\\robo2_64x64.png");
-	assert(m_moveImage2->GetBitmap());
-
-
+	
 	Vec2f size = { 42.0f,48.0f };
 	Vec2f position = { 100.0f,100.0f };
 	m_pPlayer = (Player*)&m_EntityMgr->AddObject<Player>(position,size);
@@ -205,7 +208,7 @@ void Game::InitializePLayer()
 	Animation::Sequence seq;
 	seq.current_index = 0;
 	seq.frameDelay = 0.10f;
-	seq.image = m_moveImage->GetBitmap();
+	seq.image = Locator::Images()->GetImage("robot");
 	seq.srcRects.push_back(RectF(0.0f, 0.0f, 64.0f, 64.0f));
 	an->AddSequence("right_idle", seq);
 
@@ -228,12 +231,12 @@ void Game::InitializePLayer()
 	an->AddSequence("left_walk", seq);
 
 	seq.srcRects.clear();
-	seq.image = m_moveImage2->GetBitmap();
+	seq.image = Locator::Images()->GetImage("robot2");
 	seq.srcRects.push_back(RectF(0.0f, 0.0f, 64.0f, 64.0f));
 	an->AddSequence("left_jump", seq);
 
 	seq.srcRects.clear();
-	seq.image = m_moveImage2->GetBitmap();
+	seq.image = Locator::Images()->GetImage("robot2");
 	seq.srcRects.push_back(RectF(128.0f, 64.0f, 192.0f, 128.0f));
 	an->AddSequence("right_jump", seq);
 }
@@ -298,27 +301,6 @@ void Game::HandleInput()
 {
 
 	
-	
-
-	
-	Mouse::Event mouseEvent = window.mouse.Read();
-	if (mouseEvent.GetType() == Mouse::Event::RRelease)
-	{
-		
-	}
-	if (mouseEvent.GetType() == Mouse::Event::LRelease)
-	{
-		
-	}
-	if (mouseEvent.GetType() == Mouse::Event::LPress && window.kbd.KeyIsPressed(VK_CONTROL))
-	{
-	
-		
-	}
-	
-	HandleMultiSelectedUnits();
-		
-	
 }
 
 void Game::DoCollisions()
@@ -328,12 +310,6 @@ void Game::DoCollisions()
 	
 
 
-void Game::HandleMultiSelectedUnits()
-{
-	
-	
-
-}
 
 Vec2i Game::ConvertToTileLocation(const Vec2f & worldPos)
 {
@@ -348,23 +324,22 @@ Vec2f Game::MouseWorldSpace()
 	return m_cam.ConvertToWorldSpace(Vec2f((float)window.mouse.GetPosX(), (float)window.mouse.GetPosY()));
 }
 
-void Game::DrawBackground()
+
+void Game::LoadImages()
 {
-	gfx.DrawSprite(D2D1::Matrix3x2F::Identity(), m_vpMain.GetViewRect().ToD2D(),
-		backGround->GetBitmap());
-
-	//gfx.DrawFilledRectangle(D2D1::Matrix3x2F::Identity(), m_vpMain.GetViewRect().ToD2D(),
-	//	D2D1::ColorF(.85f, .85f, .85f, 0.45f));
-
+	m_ImageMgr = std::make_unique<TextureManager>();
+	m_ImageMgr->AddImage(Locator::D2DRenderTarget(), "particle_green", L"assets\\particle.png");
+	m_ImageMgr->AddImage(Locator::D2DRenderTarget(), "particle_star", L"assets\\particle2.png");
+	m_ImageMgr->AddImage(Locator::D2DRenderTarget(), "particle_fire", L"assets\\particle3.png");
+	m_ImageMgr->AddImage(Locator::D2DRenderTarget(), "particle_blue", L"assets\\particle4.png");
+	m_ImageMgr->AddImage(Locator::D2DRenderTarget(), "fountain_blue", L"assets\\emitter2.png");
+	m_ImageMgr->AddImage(Locator::D2DRenderTarget(), "fountain_red", L"assets\\emitter1.png");
+	m_ImageMgr->AddImage(Locator::D2DRenderTarget(), "robot", L"assets\\robo64x64.png");
+	m_ImageMgr->AddImage(Locator::D2DRenderTarget(), "robot2", L"assets\\robo2_64x64.png");
+	Locator::SetImageManager(m_ImageMgr.get());
 }
 
-void Game::GetSelectedUnit(const Vec2f & pos)
-{
-	
-	
-	
 
-}
 
 
 
