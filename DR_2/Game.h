@@ -14,6 +14,7 @@
 #include "Fountain.h"
 #include "TextureManager.h"
 #include "Text.h"
+#include "Image.h"
 enum  VIEWPORTS : int
 {
 	vp_MAIN,
@@ -40,6 +41,8 @@ class Game
 	Player* m_pPlayer;
 	BackGroundLayer* background1;
 	BackGroundLayer* background2;
+
+	GameObject* UI_backGround;;
 	
 	std::vector<Fountain*> fountains;
 	Emitter* emit;

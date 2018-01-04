@@ -9,9 +9,11 @@ class Fountain :
 	
 	Emitter* emitter;
 	float distanceToActivate;
+	ID2D1Bitmap* particle;
+	
 public:
 	Fountain() = default;
-	Fountain(const Vec2f& pos,const Vec2f& size,const float& distanceToActivate);
+	Fountain(const Vec2f& pos,const Vec2f& size,const float& distanceToActivate,ID2D1Bitmap* image,ID2D1Bitmap* particle);
 	~Fountain();
 	void Init()override;
 	void AddEmitter(Emitter* e);

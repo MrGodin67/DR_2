@@ -3,20 +3,15 @@
 #include "Animation.h"
 #include "Collider.h"
 #include "Locator.h"
-Fountain::Fountain(const Vec2f& pos, const Vec2f& size, const float& distanceToActivate)
-	:distanceToActivate(distanceToActivate)
+#include "Image.h"
+Fountain::Fountain(const Vec2f& pos, const Vec2f& size, const float& distanceToActivate, ID2D1Bitmap* image, ID2D1Bitmap* particle)
+	:distanceToActivate(distanceToActivate),particle(particle)
 {
 	
 	Add<Transform>(pos, size);
 	Add<Collider>(pos + size*0.5f, size * 0.5f);
-	Add<Animation>();
-	Animation::Sequence seq;
-	seq.current_index = 0llu;
-	seq.frameDelay = 0.0f;
-	seq.image = Locator::Images()->GetImage("fountain_blue");
-	seq.srcRects.push_back(RectF(0.0f, 0.0f, seq.image->GetSize().width, seq.image->GetSize().height));
-	seq.timer = 0.0f;
-	Get<Animation>().AddSequence("default", seq);
+	Add<Image>(image);
+	
 
 }
 
@@ -35,7 +30,7 @@ void Fountain::Init()
 	Animation::Sequence seq2;
 	seq2.current_index = 0llu;
 	seq2.frameDelay = 0.0f;
-	seq2.image = Locator::Images()->GetImage("particle_blue");
+	seq2.image = particle; 
 	seq2.srcRects.push_back(RectF(0.0f, 0.0f, 256.0f, 256.0f));
 	seq2.timer = 0.0f;
 	RandG randG;
@@ -53,7 +48,7 @@ void Fountain::Init()
 	
 	AddGroup(groupLayerFront);
 	AddGroup(groupCollider);
-	AddGroup(groupMap);
+	
 }
 
 void Fountain::AddEmitter(Emitter * e)
@@ -64,7 +59,7 @@ void Fountain::AddEmitter(Emitter * e)
 
 void Fountain::Draw()
 {
-	Get<Animation>().Draw();
+	Get<Image>().Draw();
 }
 
 void Fountain::Update(const float & dt)

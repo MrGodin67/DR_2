@@ -18,8 +18,8 @@ Game::Game(Direct3DWindow & wnd)
 	window(wnd),
 	gfx(wnd.ScreenWidth(),wnd.ScreenHeight(),wnd.WindowHandle(),
 		true, FULL_SCREEN,1000.0f,0.01f),
-	m_vpMain(RectF(0.0f, 0.0f, 800, 500)),
-	m_vpUI(RectF(0.0f, 500.0f, 800, 600)),
+	m_vpMain(RectF(0.0f, 0.0f, 800, 550)),
+	m_vpUI(RectF(0.0f, 550.0f, 800, 600)),
 	m_cam(m_vpMain.Width(), m_vpMain.Height())
 {
 	Locator::SetGraphics(&gfx);
@@ -34,8 +34,11 @@ Game::Game(Direct3DWindow & wnd)
 
 	InitializePLayer();
 	background1 = &m_EntityMgr->AddObject<BackGroundLayer>(Vec2f(0.0f, 0.0f), 0.0f, L"assets\\back1.png");
-	background2 = &m_EntityMgr->AddObject<BackGroundLayer>(Vec2f(0.0f, 500.0f - 128.0f ), 0.0f, L"assets\\back2.png");
-	
+	background2 = &m_EntityMgr->AddObject<BackGroundLayer>(Vec2f(0.0f, 550.0f - 128.0f ), 0.0f, L"assets\\back2.png");
+	UI_backGround = &m_EntityMgr->AddObject<GameObject>();
+	UI_backGround->Add<Transform>(Vec2f(0.0f,0.0f),Vec2f(800.0f,50.0f));
+	UI_backGround->Add<Image>(Locator::Images()->GetImage("UI_background"));
+	UI_backGround->AddGroup(groupUI);
 	
 	
 	
@@ -61,10 +64,14 @@ Game::Game(Direct3DWindow & wnd)
 		p->SetBounceYVelocity(-200.0f);
 	}
 	
-	fountains.push_back(&m_EntityMgr->AddObject<Fountain>(Vec2f(400.0f, 548.f), Vec2f(32.0f, 32.0f),100.0f));
-	fountains.push_back(&m_EntityMgr->AddObject<Fountain>(Vec2f(1127.0f, 1057.f), Vec2f(32.0f, 32.0f), 100.0f));
-	fountains.push_back(&m_EntityMgr->AddObject<Fountain>(Vec2f(2515.0f, 737.f), Vec2f(32.0f, 32.0f), 100.0f));
-	fountains.push_back(&m_EntityMgr->AddObject<Fountain>(Vec2f(500.0f, 548.f), Vec2f(32.0f, 32.0f), 100.0f));
+	fountains.push_back(&m_EntityMgr->AddObject<Fountain>(Vec2f(400.0f, 548.f), Vec2f(32.0f, 32.0f),100.0f,
+		Locator::Images()->GetImage("fountain_blue"), Locator::Images()->GetImage("particle_blue")));
+	fountains.push_back(&m_EntityMgr->AddObject<Fountain>(Vec2f(1127.0f, 1057.f), Vec2f(32.0f, 32.0f), 100.0f,
+		Locator::Images()->GetImage("fountain_blue"),Locator::Images()->GetImage("particle_blue")));
+	fountains.push_back(&m_EntityMgr->AddObject<Fountain>(Vec2f(2515.0f, 737.f), Vec2f(32.0f, 32.0f), 100.0f, 
+		Locator::Images()->GetImage("fountain_blue"), Locator::Images()->GetImage("particle_blue")));
+	fountains.push_back(&m_EntityMgr->AddObject<Fountain>(Vec2f(500.0f, 548.f), Vec2f(32.0f, 32.0f), 100.0f, 
+		Locator::Images()->GetImage("fountain_blue"), Locator::Images()->GetImage("particle_blue")));
 
 	positionText = &m_EntityMgr->AddObject<Text>(Vec2f(10.0f,10.0f), Vec2f(300.0f,32.0f));
 	positionText->SetFormat(Locator::Text()->GetFormat("Tahoma12"));
@@ -352,6 +359,7 @@ void Game::LoadImages()
 	m_ImageMgr->AddImage(Locator::D2DRenderTarget(), "particle_blue", L"assets\\particle4.png");
 	m_ImageMgr->AddImage(Locator::D2DRenderTarget(), "fountain_blue", L"assets\\emitter2.png");
 	m_ImageMgr->AddImage(Locator::D2DRenderTarget(), "fountain_red", L"assets\\emitter1.png");
+	m_ImageMgr->AddImage(Locator::D2DRenderTarget(), "UI_background", L"assets\\back1_UI.png");
 	m_ImageMgr->AddImage(Locator::D2DRenderTarget(), "robot", L"assets\\robo64x64.png");
 	m_ImageMgr->AddImage(Locator::D2DRenderTarget(), "robot2", L"assets\\robo2_64x64.png");
 	m_ImageMgr->AddImage(Locator::D2DRenderTarget(), "colin", L"assets\\colin.png");
