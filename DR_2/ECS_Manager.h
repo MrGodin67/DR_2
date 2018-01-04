@@ -121,9 +121,6 @@ public:
 	void RemoveGroup(const GroupID& id);
 	Vec2f Center()const;
 };
-
-using GameObjectGroup = std::array<std::vector<GameObject*>, maxGroups>;
-
 enum GroupLabels : std::size_t
 {
 	groupRender,
@@ -135,9 +132,13 @@ enum GroupLabels : std::size_t
 	groupEmitters,
 	groupLayerFront,
 	groupLayerBack,
+	groupUI,
 	numberOfGroupLabels,
 	groupNone
 };
+using GameObjectGroup = std::array<std::vector<GameObject*>, maxGroups>;
+
+
 
 class ECS_Manager
 {
@@ -226,6 +227,8 @@ public:
 		// TODO : layers
 		for (auto& it : groupedByAction[groupRender])
 			it->Draw();
+
+		
 	}
 	virtual void Update(const float& dt)
 	{

@@ -65,6 +65,10 @@ Game::Game(Direct3DWindow & wnd)
 	fountains.push_back(&m_EntityMgr->AddObject<Fountain>(Vec2f(1127.0f, 1057.f), Vec2f(32.0f, 32.0f), 100.0f));
 	fountains.push_back(&m_EntityMgr->AddObject<Fountain>(Vec2f(2515.0f, 737.f), Vec2f(32.0f, 32.0f), 100.0f));
 	fountains.push_back(&m_EntityMgr->AddObject<Fountain>(Vec2f(500.0f, 548.f), Vec2f(32.0f, 32.0f), 100.0f));
+
+	positionText = &m_EntityMgr->AddObject<Text>(Vec2f(10.0f,10.0f), Vec2f(300.0f,32.0f));
+	positionText->SetFormat(Locator::Text()->GetFormat("Tahoma12"));
+	
 }
 
 Game::~Game()
@@ -97,6 +101,7 @@ HRESULT Game::ConstructScene(const float& deltaTime)
 	emit->DoTranslation(-m_cam.GetPosition());
 	background2->Translate(Vec2f(-m_cam.GetPosition().x*0.15f, 0.0f));
 	
+	positionText->SetText(L"Position : " + std::to_wstring(m_pPlayer->Center().x) + L" " + std::to_wstring(m_pPlayer->Center().y));
 	for (auto& it : fountains)
 	{
 		it->DoTranslation(-m_cam.GetPosition());
@@ -104,7 +109,10 @@ HRESULT Game::ConstructScene(const float& deltaTime)
 	}
 	// update physics
 	if ((m_pPlayer->Center() - emit->GetPosition()).Len() < 400.0f)
+	{
 		emit->Start();
+		
+	}
 	else
 		emit->Stop();
 	m_EntityMgr->Update(deltaTime);
@@ -139,15 +147,14 @@ HRESULT Game::RenderScene()
 	 m_pPlayer->Draw();
 	
 	m_vpMain.EndScene();
+	
+
 
 	m_vpUI.BeginScene();
 	
 	// TODO render UI controls here
-	std::wstring str;
-	str = std::to_wstring(m_pPlayer->Center().x) + L" " + std::to_wstring(m_pPlayer->Center().y);
-	gfx.RenderText((LPWSTR)str.c_str(), Locator::Text()->GetFormat("Tahoma18"), RectF(m_vpUI.GetViewTopLeft().x + 10,
-		m_vpUI.GetViewTopLeft().y + 10, m_vpUI.GetViewTopLeft().x + 200.0f, m_vpUI.GetViewTopLeft().y + 48.0f).ToD2D(),
-		D2D1::ColorF(1.0f, 1.0f, 1.0f, 1.0f));
+	RenderUI();
+	
 	m_vpUI.EndScene();
 	hr = gfx.EndScene();
 	if (FAILED(hr)) { return hr; }
@@ -307,6 +314,17 @@ void Game::DoCollisions()
 {
 		m_pPlayer->ResolveCollisions();
 }
+
+void Game::RenderUI()
+{
+	auto& vec = m_EntityMgr->GetGroupAction(groupUI);
+	for (auto& it : vec)
+	{
+		it->DoTranslation(m_vpUI.GetViewTopLeft());
+		it->Draw();
+	}
+	
+}
 	
 
 
@@ -336,6 +354,7 @@ void Game::LoadImages()
 	m_ImageMgr->AddImage(Locator::D2DRenderTarget(), "fountain_red", L"assets\\emitter1.png");
 	m_ImageMgr->AddImage(Locator::D2DRenderTarget(), "robot", L"assets\\robo64x64.png");
 	m_ImageMgr->AddImage(Locator::D2DRenderTarget(), "robot2", L"assets\\robo2_64x64.png");
+	m_ImageMgr->AddImage(Locator::D2DRenderTarget(), "colin", L"assets\\colin.png");
 	Locator::SetImageManager(m_ImageMgr.get());
 }
 

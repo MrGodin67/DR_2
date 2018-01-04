@@ -124,14 +124,12 @@ void Graphics::DrawSprite(D2D1_MATRIX_3X2_F &trans, D2D1_RECT_F &PosSize, ID2D1B
 	m_pD2DRenderTarget->SetTransform(D2D1::Matrix3x2F::Identity());
 }
 
-void Graphics::RenderText(LPWSTR String, IDWriteTextFormat *pFormat,
+void Graphics::RenderText(D2D1_MATRIX_3X2_F &trans,const std::wstring& String, IDWriteTextFormat *pFormat,
 	const D2D1_RECT_F &DrawRect, D2D1_COLOR_F &Color)
 {
-	
+	m_pD2DRenderTarget->SetTransform(trans);
 	m_pD2DWhiteBrush->SetColor(Color);
-
-	UINT strLen = lstrlen(String);
-	m_pD2DRenderTarget->DrawTextW(String, strLen, pFormat, DrawRect, m_pD2DWhiteBrush);
+	m_pD2DRenderTarget->DrawTextW(String.c_str(), String.size(), pFormat, DrawRect, m_pD2DWhiteBrush);
 }
 
 

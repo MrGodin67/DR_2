@@ -25,7 +25,7 @@ public:
 		D2D1_RECT_F *ClipRect = nullptr,float Opacity = 1.0f,
 		D2D1_BITMAP_INTERPOLATION_MODE InterpMode = D2D1_BITMAP_INTERPOLATION_MODE_LINEAR);
 	
-	void RenderText(LPWSTR String, IDWriteTextFormat *pFormat,
+	void RenderText(D2D1_MATRIX_3X2_F &trans,const std::wstring& String, IDWriteTextFormat *pFormat,
 		const D2D1_RECT_F &DrawRect, D2D1_COLOR_F &Color);
 	 
 private:

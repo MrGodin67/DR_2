@@ -13,6 +13,7 @@
 #include "Particle.h"
 #include "Fountain.h"
 #include "TextureManager.h"
+#include "Text.h"
 enum  VIEWPORTS : int
 {
 	vp_MAIN,
@@ -43,6 +44,8 @@ class Game
 	std::vector<Fountain*> fountains;
 	Emitter* emit;
 	Emitter* emit2;
+
+	Text* positionText;
 public:
 	Game(class Direct3DWindow& wnd);
 	~Game();
@@ -62,7 +65,7 @@ private:
 	void HandleMap();
 	void HandleInput();
 	void DoCollisions();
-	
+	void RenderUI();
 	Vec2i ConvertToTileLocation(const Vec2f& worldPos);
 	Vec2f MouseWorldSpace();
 	void DrawBackground();
